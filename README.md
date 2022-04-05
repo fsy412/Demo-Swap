@@ -1,16 +1,6 @@
-# solidity-contract-template
+# Demo Swap
 
-## Currently
-**This is under construction!**
-
-This repo contains a basic `greeting` smart contract integrated with DANTE cross-chain service.
-
-The basic version developed in `solidity` is currently available.
-
-## Coming soon
-- More functions in `solidity` version;
-- The high level SDK for `cross-chain contract call` is under developing, that will bring more convenient for developers.
-- The `Near Rust-wasm` version.
+This is an simple swap demo based on Dante protocol stack.
 
 ## Usage
 
@@ -33,9 +23,4 @@ truffle compile
 ### Deploy smart contract to Avalanche FUJI testnet
 ```
 truffle migrate --network avalancheFuji --reset --skip-dry-run
-```
-
-### Register greeting contract to DANTE cross-chain service
-```
-node register/registerToAvalanche.js
 ```
