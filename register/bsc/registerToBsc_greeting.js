@@ -14,12 +14,18 @@ const swapContract = new web3.eth.Contract(Swap.abi, CONFIG.BSC.SwapAddress);
   // destination chain name
   const destinationChainName = 'RINKEBY';
   // swap contract action name
-  const contractActionName = 'receive_match_order';
-  // swap action each param type
-  // receive_match_order(uint256 order_id, address payee_address, address from_chain_payee, address from_chain_asset, uint256 amount, bytes32 hash)
-  const actionParamsType = 'uint256,address,address,address,uint256,bytes32';
-  // swap action each param name
-  const actionParamsName = 'order_id,payee_address,from_chain_payee,from_chain_asset,amount,hash';
+  // greeting contract action name
+  const contractActionName = 'receiveGreeting';
+
+  // greeting action each param type
+  const actionParamsType = 'string,string,string,string';
+
+  // greeting action each param name
+  const actionParamsName = 'fromChain,title,content,date';
+
+  // greeting action abi (receiveGreeting)
+  const actionABI = '{"inputs":[{"name":"fromChain","type":"string"},{"name":"title","type":"string"},{"name":"content","type":"string"},{"name":"date","type":"string"}],"name":"receiveGreeting","type":"function"}';
+
   // Set cross chain contract address
   await bsc.sendTransaction(swapContract, 'setCrossChainContract', PrivateKey, [CONFIG.BSC.CrossChainContractAddress]);
 
@@ -28,7 +34,6 @@ const swapContract = new web3.eth.Contract(Swap.abi, CONFIG.BSC.SwapAddress);
   await bsc.sendTransaction(swapContract, 'registerMessageABI', PrivateKey, [destinationChainName, CONFIG.ETH.SwapAddress, contractActionName, actionParamsType, actionParamsName]);
 
   // Register contract info for receiving messages from other chains.
-  const actionABI = '{"inputs":[{"internalType":"uint256","name":"order_id","type":"uint256"},{"internalType":"address","name":"payee_address","type":"address"},{"internalType":"address","name":"from_chain_payee","type":"address"},{"internalType":"address","name":"from_chain_asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bytes32","name":"hash","type":"bytes32"}],"name":"receive_match_order","outputs":[],"stateMutability":"nonpayable","type":"function"}';
   await bsc.sendTransaction(swapContract, 'registerPermittedContract', PrivateKey, [destinationChainName, CONFIG.ETH.SwapAddress, contractActionName]);
   await bsc.sendTransaction(swapContract, 'registerContractABI', PrivateKey, [contractActionName, actionABI]);
 }());

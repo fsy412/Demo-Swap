@@ -7,7 +7,7 @@ import { CONFIG } from '../../config/chain'
 import { Order } from "../../models/models"
 
 const Swap = () => {
-    const { account, getChainName, approveSwap, getOrderList, createOrder } = useContext(Web3Context);
+    const { account, getChainName, approveSwap, getOrderList, createOrder, matchOrder } = useContext(Web3Context);
     const [formChainId, setFormChainId] = useState('');
     const [formAsset, setFormAsset] = useState('');
     const [toChainId, setToChainId] = useState('');
@@ -20,14 +20,11 @@ const Swap = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             let orderList = await getOrderList()
-            console.log(orderList)
             setOrders(orderList)
         }
-        // console.log(orders)
         fetchOrders();
 
         const timer = window.setInterval(async () => {
-            console.log('tick')
             let orderList = await getOrderList()
             setOrders(orderList)
         }, 2000);
@@ -56,10 +53,10 @@ const Swap = () => {
         await approveSwap(CONFIG.BSC.USDCAddress, CONFIG.BSC.SwapAddress, amount)
         console.log('approve done')
         // create order
-        let chain_from = "BSC"
+        let chain_from = "BSCTEST"
         let asset_from = CONFIG.BSC.USDCAddress
         let amount_from = ethers.utils.parseEther('1')
-        let chain_to = "ETH" // ethereum rinkeby
+        let chain_to = "RINKEBY" // ethereum rinkeby
         let asset_to = CONFIG.ETH.USDCAddress
         let amount_to = ethers.utils.parseEther('1')
 
@@ -68,11 +65,8 @@ const Swap = () => {
     }
 
     const onBuyOrder = async (order) => {
-        console.log('onBuyOrder', order)
-        // approve swap 
-        let amount = ethers.utils.parseEther(order.amount)
-        console.log('1111', amount)
-        await approveSwap(CONFIG.ETH.USDCAddress, CONFIG.ETH.SwapAddress, amount)
+        console.log('onBuyOrder', order, order.amount.toString())
+        await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.tokenContract, order.amount)
     }
 
     return (
@@ -166,8 +160,8 @@ const Swap = () => {
                     <tbody className="tableBody">
                         {orders.map((order: Order) => {
                             return (
-                                <tr key={order.createTime.toString()}>
-                                    <td>{order.createTime.toString()}</td>
+                                <tr key={order.orderId.toString()}>
+                                    <td>{order.orderId.toString()}</td>
                                     <td>USDC</td>
                                     <td>{+order.amount.toString() / 10 ** 18}</td>
                                     <td>{order.fromChainId}</td>

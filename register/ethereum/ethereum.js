@@ -6,20 +6,16 @@ const chainId = 4;
 
 module.exports = {
   // 通过私钥签名交易
-  async sendTransaction(
-    targetContract, methodName, accountPrivateKey, arguments) {
+  async sendTransaction(targetContract, methodName, accountPrivateKey, arguments) {
     try {
-      const account =
-        web3.eth.accounts.privateKeyToAccount(accountPrivateKey)
-          .address;  // 私钥导出公钥
+      const account = web3.eth.accounts.privateKeyToAccount(accountPrivateKey).address;  // 私钥导出公钥
+      // console.log('account', account)
       const to = targetContract.options.address;
-      const nonce = web3.utils.numberToHex(
-        await web3.eth.getTransactionCount(account));  // 获取生成 nonce
-      const data = targetContract.methods[methodName]
-        .apply(targetContract.methods, arguments)
-        .encodeABI();  // encode ABI
-      const gas = web3.utils.numberToHex(
-        parseInt((await web3.eth.getBlock('latest')).gasLimit - 1));
+      const nonce = web3.utils.numberToHex(await web3.eth.getTransactionCount(account));  // 获取生成 nonce
+      const data = targetContract.methods[methodName].apply(targetContract.methods, arguments).encodeABI();  // encode ABI
+      // const gas = web3.utils.numberToHex(parseInt((await web3.eth.getBlock('latest')).gasLimit - 1));
+      const gas = 2100000;
+      // console.log('gas',gas)
       let gasPrice = await web3.eth.getGasPrice();
       gasPrice = 50000000000;
 
@@ -28,8 +24,7 @@ module.exports = {
       // console.log(tx);
 
       // 签名交易
-      let signTx =
-        await web3.eth.accounts.signTransaction(tx, accountPrivateKey);
+      let signTx = await web3.eth.accounts.signTransaction(tx, accountPrivateKey);
       let ret = await web3.eth.sendSignedTransaction(signTx.rawTransaction);
       console.log('gasUsed: ' + methodName + ' ' + ret.gasUsed);
       return ret;

@@ -15,8 +15,10 @@ export const Web3Provider = (props: any) => {
 
   const getChainSwapAddress = (chainId) => {
     if (chainId == CONFIG.BSC.Name) {
+      console.log(chainId, CONFIG.BSC.SwapAddress)
       return CONFIG.BSC.SwapAddress
     } else if (chainId == CONFIG.ETH.Name) {
+      console.log(chainId, CONFIG.ETH.SwapAddress)
       return CONFIG.ETH.SwapAddress
     }
   }
@@ -27,7 +29,7 @@ export const Web3Provider = (props: any) => {
     getOrderList: (swapAddress) => { },
     createOrder: async (chainFrom, asset_from, amountFrom, chainTo, assetTo, amountTo) => { },
     getChainName: (chainId) => { },
-    matchOrder: async (chainId, orderId, payeAddress, asset, amount) => { },
+    matchOrder: async (fromChainId, chainId, orderId, asset, amount) => { },
   }
 
   useEffect(() => {
@@ -76,13 +78,13 @@ export const Web3Provider = (props: any) => {
     let provider = new ethers.providers.JsonRpcProvider("https://data-seed-prebsc-2-s2.binance.org:8545");
     const contract = new ethers.Contract(CONFIG.BSC.SwapAddress, Swap.abi, provider)
     let orderList = await contract.query_all_orders()
-    console.log('getOrderList bsc orders', orderList)
+    // console.log('getOrderList bsc orders', orderList)
 
     {
       let provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/f6673495815e4dcbbd271ef93de098ec");
       const contract = new ethers.Contract(CONFIG.ETH.SwapAddress, Swap.abi, provider)
       let orders = await contract.query_all_orders()
-      console.log('getOrderList eth orders', orders)
+      // console.log('getOrderList eth orders', orders)
       orderList = orderList.concat(orders)
     }
     return orderList
@@ -95,9 +97,10 @@ export const Web3Provider = (props: any) => {
     await transaction.wait()
   };
 
-  functionsToExport.matchOrder = async (chainId, orderId, payeeAddress, asset, amount) => {
+  functionsToExport.matchOrder = async (fromChainId, chainId, orderId, asset, amount) => {
+    console.log("matchOrder",'from chain',fromChainId, 'current chain', chainId, orderId, asset, amount)
     let swapContract = getContract(getChainSwapAddress(chainId), Swap.abi)
-    const transaction = await swapContract.match_order(chainId, orderId, payeeAddress, asset, amount)
+    const transaction = await swapContract.match_order(fromChainId, orderId, asset, amount)
     await transaction.wait()
   };
 

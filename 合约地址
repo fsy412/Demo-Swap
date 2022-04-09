@@ -1,0 +1,6 @@
+"BSCTEST": {
+      "nodeAddress": "https://data-seed-prebsc-1-s1.binance.org:8545",
+      "crossChainContractAddress": "0x2EEcD9F7e1Cec2E95122ad43D26174738382c546",
+"RINKEBY": {
+      "nodeAddress": "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      "crossChainContractAddress": "0x214A20b74714B34b17Bc3300fa4d442f7b47D4f3",
