@@ -18,10 +18,10 @@ const swapContract = new web3.eth.Contract(Swap.abi, CONFIG.BSC.SwapAddress);
   const contractActionName = 'receiveGreeting';
 
   // greeting action each param type
-  const actionParamsType = 'string,string,string,string';
+  const actionParamsType = 'string|string|string|string';
 
   // greeting action each param name
-  const actionParamsName = 'fromChain,title,content,date';
+  const actionParamsName = 'fromChain|title|content|date';
 
   // greeting action abi (receiveGreeting)
   const actionABI = '{"inputs":[{"name":"fromChain","type":"string"},{"name":"title","type":"string"},{"name":"content","type":"string"},{"name":"date","type":"string"}],"name":"receiveGreeting","type":"function"}';

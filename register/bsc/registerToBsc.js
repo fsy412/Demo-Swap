@@ -17,9 +17,9 @@ const swapContract = new web3.eth.Contract(Swap.abi, CONFIG.BSC.SwapAddress);
   const contractActionName = 'receive_match_order';
   // swap action each param type
   // receive_match_order(uint256 order_id, address payee_address, address from_chain_payee, address from_chain_asset, uint256 amount, bytes32 hash)
-  const actionParamsType = 'uint256,address,address,address,uint256,bytes32';
+  const actionParamsType = 'uint256|address|address|address|uint256|bytes32';
   // swap action each param name
-  const actionParamsName = 'order_id,payee_address,from_chain_payee,from_chain_asset,amount,hash';
+  const actionParamsName = 'order_id|payee_address|from_chain_payee|from_chain_asset|amount|hash';
   // Set cross chain contract address
   await bsc.sendTransaction(swapContract, 'setCrossChainContract', PrivateKey, [CONFIG.BSC.CrossChainContractAddress]);
 

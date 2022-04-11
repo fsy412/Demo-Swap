@@ -16,12 +16,13 @@ contract Swap is ContractBase {
         uint256 orderId;
         address sender;
         address tokenContract;
+        address toTokenContract;
         uint256 amount;
+        uint256 toAmount;
         bytes32 hashlock;
         uint256 createTime;
-        uint256 timelock; // locked UNTIL this time.
-        bool withdrawn;
-        bool refunded;
+        // uint256 timelock; // locked UNTIL this time.
+        bool cancelled;
         string fromChainId;
         string toChainId;
         bool filled;
@@ -36,18 +37,8 @@ contract Swap is ContractBase {
         bytes32 hashlock;
         uint256 createTime;
         uint256 timelock; // locked UNTIL this time.
-        bool withdrawn;
-        bool refunded;
+        address buyer;
     }
-
-    // greeting
-    struct Greeting {
-        string fromChain;
-        string title;
-        string content;
-        string date;
-    }
-    Greeting[] public greetings;
 
     // Cross-chain destination contract map
     mapping(string => mapping(string => DestnContract)) public destnContractMap;
@@ -77,15 +68,16 @@ contract Swap is ContractBase {
             amount_from
         );
         require(ret, "transfer to swap failed");
+    
         idToOrder[_orderIds] = Order(
             _orderIds,
             msg.sender,
             asset_from,
+            asset_to,
             amount_from,
+            amount_to,
             sha256(abi.encodePacked(uint256(0))),
             block.timestamp,
-            block.timestamp + 3600,
-            false,
             false,
             chain_from,
             chain_to,
@@ -113,8 +105,8 @@ contract Swap is ContractBase {
         address asset,
         uint256 amount
     ) public {
-        // bool ret = IERC20(asset).transferFrom(msg.sender, address(this), amount);
-        // require(ret, "transfer to swap failed");
+        bool ret = IERC20(asset).transferFrom(msg.sender, address(this), amount);
+        require(ret, "transfer to swap failed");
         idToFillOrder[_fillOrderIds] = OrderFill(
             order_id,
             chain_id,
@@ -124,32 +116,18 @@ contract Swap is ContractBase {
             sha256(abi.encodePacked(uint256(0))),
             block.timestamp,
             block.timestamp + 3600,
-            false,
-            false
+            msg.sender
         );
         _fillOrderIds = _fillOrderIds + 1;
 
         mapping(string => DestnContract) storage map = destnContractMap[
             chain_id
         ];
-        // DestnContract storage destnContract = map["receive_match_order"];
-        // require(destnContract.used, "action not registered");
-
-        // bytes memory data = abi.encode(order_id, msg.sender, asset, msg.sender, amount, sha256(abi.encodePacked(uint(0))));
-        // SQOS memory sqos = SQOS(1);
-        // crossChainContract.sendMessage(
-        //     chain_id,
-        //     destnContract.contractAddress,
-        //     destnContract.funcName,
-        //     sqos,
-        //     data
-        // );
-
-        DestnContract storage destnContract = map["receiveGreeting"];
+        DestnContract storage destnContract = map["receive_match_order"];
         require(destnContract.used, "action not registered");
 
-        bytes memory data = abi.encode(chain_id, "_title", "_content", "_date");
-        SQOS memory sqos = SQOS(1);
+        bytes memory data = abi.encode(order_id, msg.sender, asset, msg.sender, amount / 10**18, sha256(abi.encodePacked(uint(0))));
+        SQOS memory sqos = SQOS(0);
         crossChainContract.sendMessage(
             chain_id,
             destnContract.contractAddress,
@@ -159,18 +137,13 @@ contract Swap is ContractBase {
         );
     }
 
-    /**
-     * Receive greeting info from other chains
-     * @param _fromChain - from chain name
-     * @param _title - greeting title
-     * @param _content - greeting content
-     * @param _date - date
-     */
-    function receiveGreeting(
-        string calldata _fromChain,
-        string calldata _title,
-        string calldata _content,
-        string calldata _date
+    function receive_match_order(
+        uint256 order_id,
+        address payee_address,
+        address from_chain_payee,
+        address from_chain_asset,
+        uint256 amount,
+        bytes32 hash
     ) public {
         require(
             msg.sender == address(crossChainContract),
@@ -180,7 +153,7 @@ contract Swap is ContractBase {
         // `context` used for verify the operation authority
         SimplifiedMessage memory context = getContext();
         // verify sqos
-        require(context.sqos.reveal == 1, "SQoS invalid!");
+        // require(context.sqos.reveal == 1, "SQoS invalid!");
 
         // verify the sender from the registered chain
         mapping(string => string)
@@ -192,21 +165,6 @@ contract Swap is ContractBase {
             "message sender is not registered!"
         );
 
-        Greeting storage g = greetings.push();
-        g.fromChain = _fromChain;
-        g.title = _title;
-        g.content = _content;
-        g.date = _date;
-    }
-
-    function receive_match_order(
-        uint256 order_id,
-        address payee_address,
-        address from_chain_payee,
-        address from_chain_asset,
-        uint256 amount,
-        bytes32 hash
-    ) public {
         Order storage order = idToOrder[order_id];
         order.filled = true;
         bool ret = IERC20(order.tokenContract).transfer(
@@ -214,9 +172,34 @@ contract Swap is ContractBase {
             order.amount
         );
         // require(ret, "transfer payee failed");
+
+        // send receive_transfer_asset
+        mapping(string => DestnContract) storage map = destnContractMap[
+            order.toChainId
+        ];
+        DestnContract storage destnContract = map["receive_transfer_asset"];
+        require(destnContract.used, "transfer_asset not registered");
+
+        bytes memory data = abi.encode(order_id, sha256(abi.encodePacked(uint(0))));
+        SQOS memory sqos = SQOS(0);
+        crossChainContract.sendMessage(
+            order.toChainId,
+            destnContract.contractAddress,
+            destnContract.funcName,
+            sqos,
+            data
+        );
     }
 
     function unlock_asset(uint256 order_id, string memory key) public {}
+
+    function receive_transfer_asset(uint256 order_id, bytes32 hash) public {
+        uint256 orderCount = _orderIds;
+        for (uint256 i = 0; i < orderCount; i++) {
+            OrderFill storage order = idToFillOrder[i];
+            bool ret = IERC20(order.tokenContract).transfer(order.buyer, order.amount);
+        }
+    }
 
     function registerDestnContract(
         string calldata _funcName,
@@ -242,5 +225,13 @@ contract Swap is ContractBase {
             _chainName
         ];
         map[_funcName] = _sender;
+    }
+
+    function verify(
+        string calldata _chainName,
+        string calldata _funcName,
+        string calldata _sender
+    ) public view virtual returns (bool) {
+        return true;
     }
 }

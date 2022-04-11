@@ -100,7 +100,7 @@ export const Web3Provider = (props: any) => {
   functionsToExport.matchOrder = async (fromChainId, chainId, orderId, asset, amount) => {
     console.log("matchOrder",'from chain',fromChainId, 'current chain', chainId, orderId, asset, amount)
     let swapContract = getContract(getChainSwapAddress(chainId), Swap.abi)
-    const transaction = await swapContract.match_order(fromChainId, orderId, asset, amount)
+    const transaction = await swapContract.match_order(fromChainId, orderId, asset, 1)
     await transaction.wait()
   };
 
