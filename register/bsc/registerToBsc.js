@@ -31,4 +31,19 @@ const swapContract = new web3.eth.Contract(Swap.abi, CONFIG.BSC.SwapAddress);
   const actionABI = '{"inputs":[{"internalType":"uint256","name":"order_id","type":"uint256"},{"internalType":"address","name":"payee_address","type":"address"},{"internalType":"address","name":"from_chain_payee","type":"address"},{"internalType":"address","name":"from_chain_asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bytes32","name":"hash","type":"bytes32"}],"name":"receive_match_order","outputs":[],"stateMutability":"nonpayable","type":"function"}';
   await bsc.sendTransaction(swapContract, 'registerPermittedContract', PrivateKey, [destinationChainName, CONFIG.ETH.SwapAddress, contractActionName]);
   await bsc.sendTransaction(swapContract, 'registerContractABI', PrivateKey, [contractActionName, actionABI]);
+
+  //
+  {
+    const contractActionName = 'receive_transfer_asset';
+    const actionParamsType = 'uint256|bytes32';
+    const actionParamsName = 'order_id|hash';
+    const actionABI = '{"inputs":[{"internalType":"uint256","name":"order_id","type":"uint256"},{"internalType":"bytes32","name":"hash","type":"bytes32"}],"name":"receive_transfer_asset","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+
+    // Register contract info for sending messages to other chains
+    await bsc.sendTransaction(swapContract, 'registerDestnContract', PrivateKey, [contractActionName, destinationChainName, CONFIG.ETH.SwapAddress, contractActionName]);
+    await bsc.sendTransaction(swapContract, 'registerMessageABI', PrivateKey, [destinationChainName, CONFIG.ETH.SwapAddress, contractActionName, actionParamsType, actionParamsName]);
+    // Register contract info for receiving messages from other chains.
+    await bsc.sendTransaction(swapContract, 'registerPermittedContract', PrivateKey, [destinationChainName, CONFIG.ETH.SwapAddress, contractActionName]);
+    await bsc.sendTransaction(swapContract, 'registerContractABI', PrivateKey, [contractActionName, actionABI]);
+  }
 }());

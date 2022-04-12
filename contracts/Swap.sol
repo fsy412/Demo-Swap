@@ -37,8 +37,19 @@ contract Swap is ContractBase {
         bytes32 hashlock;
         uint256 createTime;
         uint256 timelock; // locked UNTIL this time.
-        address buyer;
+        address payee;
     }
+
+    // greeting
+    struct Greeting {
+        string fromChain;
+        string title;
+        string content;
+        string date;
+        uint256 orderId;
+    }
+    // Store greetings
+    Greeting[] public greetings;
 
     // Cross-chain destination contract map
     mapping(string => mapping(string => DestnContract)) public destnContractMap;
@@ -126,7 +137,7 @@ contract Swap is ContractBase {
         DestnContract storage destnContract = map["receive_match_order"];
         require(destnContract.used, "action not registered");
 
-        bytes memory data = abi.encode(order_id, msg.sender, asset, msg.sender, amount / 10**18, sha256(abi.encodePacked(uint(0))));
+        bytes memory data = abi.encode(order_id, msg.sender, asset, msg.sender, 1, sha256(abi.encodePacked(uint(0))));
         SQOS memory sqos = SQOS(0);
         crossChainContract.sendMessage(
             chain_id,
@@ -165,6 +176,13 @@ contract Swap is ContractBase {
             "message sender is not registered!"
         );
 
+        Greeting storage g = greetings.push();
+        g.fromChain = "_fromChain";
+        g.title = "_title";
+        g.content = "_content";
+        g.date = "_date";
+        g.orderId = order_id;
+
         Order storage order = idToOrder[order_id];
         order.filled = true;
         bool ret = IERC20(order.tokenContract).transfer(
@@ -194,10 +212,12 @@ contract Swap is ContractBase {
     function unlock_asset(uint256 order_id, string memory key) public {}
 
     function receive_transfer_asset(uint256 order_id, bytes32 hash) public {
-        uint256 orderCount = _orderIds;
+        uint256 orderCount = _fillOrderIds;
         for (uint256 i = 0; i < orderCount; i++) {
             OrderFill storage order = idToFillOrder[i];
-            bool ret = IERC20(order.tokenContract).transfer(order.buyer, order.amount);
+            if (order.orderId == order_id){
+                bool ret = IERC20(order.tokenContract).transfer(order.payee, order.amount);
+            }
         }
     }
 

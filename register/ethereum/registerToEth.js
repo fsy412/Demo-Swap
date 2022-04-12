@@ -10,18 +10,6 @@ console.log("crossChainContractAddress:", CONFIG.ETH.CrossChainContractAddress)
 
 const swapContract = new web3.eth.Contract(Swap.abi, CONFIG.ETH.SwapAddress);
 
-async function registerAction(destinationChainName, contractActionName, actionParamsType, actionParamsName, actionABI) {
-  // Set cross chain contract address
-  await ethereum.sendTransaction(swapContract, 'setCrossChainContract', PrivateKey, [CONFIG.ETH.CrossChainContractAddress]);
-  // Register contract info for sending messages to other chains
-  await ethereum.sendTransaction(swapContract, 'registerDestnContract', PrivateKey, [contractActionName, destinationChainName, CONFIG.BSC.SwapAddress, contractActionName]);
-  await ethereum.sendTransaction(swapContract, 'registerMessageABI', PrivateKey, [destinationChainName, CONFIG.BSC.SwapAddress, contractActionName, actionParamsType, actionParamsName]);
-  // Register contract info for receiving messages from other chains.
-  const actionABI = '{"inputs":[{"internalType":"uint256","name":"order_id","type":"uint256"},{"internalType":"address","name":"payee_address","type":"address"},{"internalType":"address","name":"from_chain_payee","type":"address"},{"internalType":"address","name":"from_chain_asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bytes32","name":"hash","type":"bytes32"}],"name":"receive_match_order","outputs":[],"stateMutability":"nonpayable","type":"function"}';
-  await ethereum.sendTransaction(swapContract, 'registerPermittedContract', PrivateKey, [destinationChainName, CONFIG.BSC.SwapAddress, contractActionName]);
-  await ethereum.sendTransaction(swapContract, 'registerContractABI', PrivateKey, [contractActionName, actionABI]);
-}
-
 (async function init() {
   // destination chain name
   const destinationChainName = 'BSCTEST';
@@ -43,4 +31,19 @@ async function registerAction(destinationChainName, contractActionName, actionPa
   const actionABI = '{"inputs":[{"internalType":"uint256","name":"order_id","type":"uint256"},{"internalType":"address","name":"payee_address","type":"address"},{"internalType":"address","name":"from_chain_payee","type":"address"},{"internalType":"address","name":"from_chain_asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bytes32","name":"hash","type":"bytes32"}],"name":"receive_match_order","outputs":[],"stateMutability":"nonpayable","type":"function"}';
   await ethereum.sendTransaction(swapContract, 'registerPermittedContract', PrivateKey, [destinationChainName, CONFIG.BSC.SwapAddress, contractActionName]);
   await ethereum.sendTransaction(swapContract, 'registerContractABI', PrivateKey, [contractActionName, actionABI]);
+
+  {
+    const contractActionName = 'receive_transfer_asset';
+    const actionParamsType = 'uint256|bytes32';
+    const actionParamsName = 'order_id|hash';
+    const actionABI = '{"inputs":[{"internalType":"uint256","name":"order_id","type":"uint256"},{"internalType":"bytes32","name":"hash","type":"bytes32"}],"name":"receive_transfer_asset","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+
+    // Register contract info for sending messages to other chains
+    await ethereum.sendTransaction(swapContract, 'registerDestnContract', PrivateKey, [contractActionName, destinationChainName, CONFIG.BSC.SwapAddress, contractActionName]);
+    await ethereum.sendTransaction(swapContract, 'registerMessageABI', PrivateKey, [destinationChainName, CONFIG.BSC.SwapAddress, contractActionName, actionParamsType, actionParamsName]);
+
+    // Register contract info for receiving messages from other chains.
+    await ethereum.sendTransaction(swapContract, 'registerPermittedContract', PrivateKey, [destinationChainName, CONFIG.BSC.SwapAddress, contractActionName]);
+    await ethereum.sendTransaction(swapContract, 'registerContractABI', PrivateKey, [contractActionName, actionABI]);
+  }
 }());

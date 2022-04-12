@@ -7,7 +7,7 @@ import { CONFIG } from '../../config/chain'
 import { Order } from "../../models/models"
 
 const Swap = () => {
-    const { account, getChainName, approveSwap, getOrderList, createOrder, matchOrder } = useContext(Web3Context);
+    const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress } = useContext(Web3Context);
     const [formChainId, setFormChainId] = useState('');
     const [formAsset, setFormAsset] = useState('');
     const [toChainId, setToChainId] = useState('');
@@ -65,8 +65,10 @@ const Swap = () => {
     }
 
     const onBuyOrder = async (order) => {
-        console.log('onBuyOrder', order, order.amount.toString())
-        await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.tokenContract, order.amount)
+        console.log('onBuyOrder', 'orderid', order.orderId.toString(), 'amount', order.amount.toString())
+        console.log('swap address', getSwapAddress(chainName), 'token', order.tokenContract)
+        await approveSwap(order.toTokenContract, getSwapAddress(chainName), order.amount.toString())
+        await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.toTokenContract, order.amount)
     }
 
     return (

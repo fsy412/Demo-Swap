@@ -12,13 +12,12 @@ export const Web3Provider = (props: any) => {
   const [account, setAccount] = useState('');
   const [signer, setSigner] = useState(null);
   const [blockchainId, setBlockchainId] = useState(0);
+  const [chainName, setChainName] = useState('');
 
   const getChainSwapAddress = (chainId) => {
     if (chainId == CONFIG.BSC.Name) {
-      console.log(chainId, CONFIG.BSC.SwapAddress)
       return CONFIG.BSC.SwapAddress
     } else if (chainId == CONFIG.ETH.Name) {
-      console.log(chainId, CONFIG.ETH.SwapAddress)
       return CONFIG.ETH.SwapAddress
     }
   }
@@ -30,6 +29,7 @@ export const Web3Provider = (props: any) => {
     createOrder: async (chainFrom, asset_from, amountFrom, chainTo, assetTo, amountTo) => { },
     getChainName: (chainId) => { },
     matchOrder: async (fromChainId, chainId, orderId, asset, amount) => { },
+    getSwapAddress: (chainId) => { },
   }
 
   useEffect(() => {
@@ -39,6 +39,7 @@ export const Web3Provider = (props: any) => {
 
         const { chainId } = await provider.getNetwork();
         setBlockchainId(chainId);
+        (chainId == 97) ? setChainName("BSCTEST") : setChainName("RINKEBY")
         const addresses = await provider.listAccounts();
         if (addresses.length) {
           setAccount(addresses[0]);
@@ -92,15 +93,16 @@ export const Web3Provider = (props: any) => {
 
   // function create_order(uint256 chain_from, address asset_from, uint256 amount_from, uint256 chain_to, address asset_to, uint amount_to) public returns (bool) {
   functionsToExport.createOrder = async (chainFrom, assetFrom, amountFrom, chainTo, assetTo, amountTo) => {
+    console.log("amountFrom", amountFrom.toString())
     let swapContract = getContract(getChainSwapAddress(chainFrom), Swap.abi)
     const transaction = await swapContract.create_order(chainFrom, assetFrom, amountFrom, chainTo, assetTo, amountTo)
     await transaction.wait()
   };
 
   functionsToExport.matchOrder = async (fromChainId, chainId, orderId, asset, amount) => {
-    console.log("matchOrder",'from chain',fromChainId, 'current chain', chainId, orderId, asset, amount)
+    console.log("matchOrder", 'from chain', fromChainId, 'current chain', chainId, 'orderId',orderId, asset, amount.toString())
     let swapContract = getContract(getChainSwapAddress(chainId), Swap.abi)
-    const transaction = await swapContract.match_order(fromChainId, orderId, asset, 1)
+    const transaction = await swapContract.match_order(fromChainId, orderId, asset, amount.toString())
     await transaction.wait()
   };
 
@@ -114,7 +116,11 @@ export const Web3Provider = (props: any) => {
     console.error("unknown chainId", chainId);
   };
 
-  return (<Web3Context.Provider value={{ account, ...functionsToExport }}>
+  functionsToExport.getSwapAddress = (chainId) => {
+    return getChainSwapAddress(chainId);
+  };
+
+  return (<Web3Context.Provider value={{ account, chainName, ...functionsToExport }}>
     {props.children}
   </Web3Context.Provider>)
 }
