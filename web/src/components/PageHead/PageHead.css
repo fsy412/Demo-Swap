@@ -7,10 +7,18 @@
     font-size: 25px;
     margin-left: 40px;
 }
-.wallet{
+
+.faucet{
+    font-weight: bold; 
     margin-right: 10px;
 }
 
+.wallet{
+    font-weight: bold; 
+    margin-right: 30px;
+}
+
 .disconnect{
+    font-weight: bold; 
     margin-right: 30px;
 }

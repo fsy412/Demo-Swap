@@ -38,18 +38,8 @@ contract Swap is ContractBase {
         uint256 createTime;
         uint256 timelock; // locked UNTIL this time.
         address payee;
+        string status;
     }
-
-    // greeting
-    struct Greeting {
-        string fromChain;
-        string title;
-        string content;
-        string date;
-        uint256 orderId;
-    }
-    // Store greetings
-    Greeting[] public greetings;
 
     // Cross-chain destination contract map
     mapping(string => mapping(string => DestnContract)) public destnContractMap;
@@ -127,7 +117,8 @@ contract Swap is ContractBase {
             sha256(abi.encodePacked(uint256(0))),
             block.timestamp,
             block.timestamp + 3600,
-            msg.sender
+            msg.sender,
+            "created"
         );
         _fillOrderIds = _fillOrderIds + 1;
 
@@ -176,13 +167,6 @@ contract Swap is ContractBase {
             "message sender is not registered!"
         );
 
-        Greeting storage g = greetings.push();
-        g.fromChain = "_fromChain";
-        g.title = "_title";
-        g.content = "_content";
-        g.date = "_date";
-        g.orderId = order_id;
-
         Order storage order = idToOrder[order_id];
         order.filled = true;
         bool ret = IERC20(order.tokenContract).transfer(
@@ -190,7 +174,7 @@ contract Swap is ContractBase {
             order.amount
         );
         // require(ret, "transfer payee failed");
-
+      
         // send receive_transfer_asset
         mapping(string => DestnContract) storage map = destnContractMap[
             order.toChainId
@@ -217,6 +201,7 @@ contract Swap is ContractBase {
             OrderFill storage order = idToFillOrder[i];
             if (order.orderId == order_id){
                 bool ret = IERC20(order.tokenContract).transfer(order.payee, order.amount);
+                order.status = "done";
             }
         }
     }
