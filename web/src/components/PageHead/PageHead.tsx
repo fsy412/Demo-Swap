@@ -11,18 +11,15 @@ const PageHead = () => {
     }
     return (<Navbar bg="light" expand="lg">
         <img className="logo" src="https://miro.medium.com/fit/c/176/176/1*LRJ2wZUqNQHTOm1KkRlmUA.jpeg" alt="logo" />
-        <Navbar.Brand className="headerText" href="#home">Bridge</Navbar.Brand>
+        <Navbar.Brand className="headerText" href="/">Bridge</Navbar.Brand>
         <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">  </Nav>
             <Nav>
-                <Nav.Link className="faucet" href="#" >Faucet</Nav.Link>
+                <Nav.Link className="faucet" href="/faucet" >Faucet</Nav.Link>
             </Nav>
             <Nav>
                 <Nav.Link className="wallet" href="#" onClick={connectWallet}> {account ? short(account?.toString()) : "Connect To Wallet"}</Nav.Link>
             </Nav>
-            {/* <Nav>
-                <Nav.Link className="disconnect" href="#" >Disconnect</Nav.Link>
-            </Nav> */}
         </Navbar.Collapse>
     </Navbar>)
 }

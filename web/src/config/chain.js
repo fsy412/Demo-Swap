@@ -11,6 +11,22 @@ const networks = {
         SwapAddress: "0x4Cf2A95791d1048312c66B574960B78eA1c1B9e1",
         USDCAddress: "0xD2ccfe099E19Dc03e0802C659A446db720C01D71",
     },
+    TokenList: [
+        {
+            Name: "BSCTEST",
+            List: [
+                { "name": "USDC", "icon": "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png", "address": "0xB33f8CEE067392aBD54b1Ecec75edc2d6b193473" },
+                { "name": "BNB", "icon": "https://anyswap.exchange/static/media/BNB.c6c25fc0.svg", "address": "0xB33f8CEE067392aBD54b1Ecec75edc2d6b193473" },
+            ]
+        },
+        {
+            Name: "RINKEBY",
+            List: [
+                { "name": "USDC", "icon": "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png", "address": "0xB33f8CEE067392aBD54b1Ecec75edc2d6b193473" },
+                { "name": "ETH", "icon": "https://anyswap.exchange/static/media/ETH.cec4ef9a.svg", "address": "0xB33f8CEE067392aBD54b1Ecec75edc2d6b193473" },
+            ]
+        },
+    ]
 }
 
 export const CONFIG = networks

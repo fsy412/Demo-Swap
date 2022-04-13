@@ -15,9 +15,9 @@ export const Web3Provider = (props: any) => {
   const [chainName, setChainName] = useState('');
 
   const getChainSwapAddress = (chainId) => {
-    if (chainId == CONFIG.BSC.Name) {
+    if (chainId === CONFIG.BSC.Name) {
       return CONFIG.BSC.SwapAddress
-    } else if (chainId == CONFIG.ETH.Name) {
+    } else if (chainId === CONFIG.ETH.Name) {
       return CONFIG.ETH.SwapAddress
     }
   }
@@ -29,21 +29,25 @@ export const Web3Provider = (props: any) => {
     createOrder: async (chainFrom, asset_from, amountFrom, chainTo, assetTo, amountTo) => { },
     matchOrder: async (fromChainId, chainId, orderId, asset, amount) => { },
     getSwapAddress: (chainId) => { },
+    faucet: (tokenAddress) => { },
   }
 
   useEffect(() => {
     const checkConnection = async () => {
+      // console.log("checkConnection", blockchainId);
       if (window.ethereum) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-
         const { chainId } = await provider.getNetwork();
         setBlockchainId(chainId);
-        (chainId == 97) ? setChainName("BSCTEST") : setChainName("RINKEBY")
-        // const addresses = await provider.listAccounts();
-        // if (addresses.length) {
-        //   setAccount(addresses[0]);
-        // } else {
-        //   return;
+        (chainId === 97) ? setChainName("BSCTEST") : setChainName("RINKEBY")
+
+        // if (blockchainId != 0) {
+        //   const addresses = await provider.listAccounts();
+        //   if (addresses.length) {
+        //     setAccount(addresses[0]);
+        //   } else {
+        //     return;
+        //   }
         // }
       }
     };
@@ -106,6 +110,12 @@ export const Web3Provider = (props: any) => {
 
   functionsToExport.getSwapAddress = (chainId) => {
     return getChainSwapAddress(chainId);
+  };
+
+  functionsToExport.faucet = async (tokenAddress) => {
+    const contract = new ethers.Contract(tokenAddress, Token.abi, signer)
+    const transaction = await contract.faucet();
+    await transaction.wait()
   };
 
   return (<Web3Context.Provider value={{ account, chainName, ...functionsToExport }}>
