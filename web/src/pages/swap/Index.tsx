@@ -7,14 +7,16 @@ import { CONFIG } from '../../config/chain'
 import { Order } from "../../models/models"
 
 const Swap = () => {
-    const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress } = useContext(Web3Context);
-    const [formChainId, setFormChainId] = useState('Select Chain');
-    const [formAsset, setFormAsset] = useState('Select Token');
-    const [fromAmount, setFromAmount] = useState(0);
+    const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress, getBalance } = useContext(Web3Context);
+    const [fromChainId, setFormChainId] = useState('Select Chain');
+    const [fromAsset, setFormAsset] = useState('Select Token');
+    const [fromAmount, setFromAmount] = useState('');
+    const [fromBalance, setFromBalance] = useState(0);
 
     const [toChainId, setToChainId] = useState('Select Chain');
     const [toAsset, setToAsset] = useState('Select Token');
     const [toAmount, setToAmount] = useState(0);
+    const [toBalance, setToBalance] = useState(0);
 
     const [orders, setOrders] = useState<Order[]>([]);
     const [orderCount, setOrderCount] = useState(0);
@@ -40,9 +42,11 @@ const Swap = () => {
         let token = (e.target as HTMLInputElement).textContent;
         setFormAsset(token)
     }
-    const onFromChainSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
+    const onFromChainSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
+        let balance = await getBalance(fromAsset, chain)
+        setFromBalance(+balance.toString() / 1e18);
         setFormChainId(chain)
     }
     const onToTokenSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
@@ -50,31 +54,33 @@ const Swap = () => {
         let token = (e.target as HTMLInputElement).textContent;
         setToAsset(token)
     }
-    const onToChainSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
+    const onToChainSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
+        let balance = await getBalance(toAsset, chain);
+        setToBalance(+balance.toString() / 1e18);
         setToChainId(chain)
     }
     const onFromInputChange = (e) => { console.log('onFromInputChange') }
 
     const onToInputChange = (e) => { console.log('onToInputChange') }
- 
+
     const getFromAssetAddress = () => {
         let list = CONFIG.TokenList.filter(k => (k.Name === chainName))[0].List
-        let tokenAddress = list.filter(k => (k.name == formAsset))[0].address;
+        let tokenAddress = list.filter(k => (k.name == fromAsset))[0].address;
         // console.log(`token:${formAsset} address:${tokenAddress}, chain:${chainName}`)
         return tokenAddress
     }
     const getToAssetAddress = () => {
         let list = CONFIG.TokenList.filter(k => (k.Name === chainName))[0].List
-        let tokenAddress = list.filter(k => (k.name == formAsset))[0].address;
+        let tokenAddress = list.filter(k => (k.name == fromAsset))[0].address;
         // console.log(`token:${formAsset} address:${tokenAddress}, chain:${chainName}`)
         return tokenAddress
     }
 
     const onCreateOrder = async () => {
         console.log('onCreateOrder')
-        console.log('from asset:', getFromAssetAddress(), 'from chain:', formChainId)
+        console.log('from asset:', getFromAssetAddress(), 'from chain:', fromChainId)
         console.log('to asset:', getToAssetAddress(), 'to chain:', toChainId)
         console.log('swap address:', getSwapAddress(chainName))
         // approve swap 
@@ -82,7 +88,7 @@ const Swap = () => {
         await approveSwap(getToAssetAddress(), getSwapAddress(chainName), amount)
         console.log('approve done')
         // create order
-        let chain_from = formChainId
+        let chain_from = fromChainId
         let asset_from = getFromAssetAddress()
         let amount_from = ethers.utils.parseEther('1')
         let chain_to = toChainId
@@ -123,7 +129,7 @@ const Swap = () => {
                         From
                     </span>
                     <span className="textBalance">
-                        Balance 2.3
+                        Balance: {fromBalance}
                     </span>
                 </div>
                 <div className="inputBox">
@@ -133,7 +139,7 @@ const Swap = () => {
                     <div className="selectWrapper">
                         <Dropdown className="tokenSelect" onSelect={onFromTokenSelect}>
                             <Dropdown.Toggle className="dropdownToggle" id="dropdown-basic">
-                                {formAsset}
+                                {fromAsset}
                             </Dropdown.Toggle>
                             <Dropdown.Menu className="dropdownMenu">
                                 <Dropdown.Item className="dropdownItem" href=""><img className="icon" src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png"></img>USDC</Dropdown.Item>
@@ -141,7 +147,7 @@ const Swap = () => {
                         </Dropdown>
                         <Dropdown className="tokenSelect" onSelect={onFromChainSelect}>
                             <Dropdown.Toggle className="dropdownToggle" id="dropdown-basic">
-                                {formChainId}
+                                {fromChainId}
                             </Dropdown.Toggle>
                             <Dropdown.Menu className="dropdownMenu">
                                 <Dropdown.Item className="dropdownItem" href=""><img className="icon" src="https://anyswap.exchange/static/media/ETH.cec4ef9a.svg"></img>RINKEBY</Dropdown.Item>
@@ -158,7 +164,7 @@ const Swap = () => {
                         To
                     </span>
                     <span className="textBalance">
-                        Balance
+                        Balance: {toBalance}
                     </span>
                 </div>
                 <div className="inputBox">
@@ -197,9 +203,11 @@ const Swap = () => {
                         <tr>
                             <th>Id</th>
                             <th>Coin</th>
-                            <th>Amount</th>
                             <th>From Chain</th>
+                            <th>Amount</th>
                             <th>To Chain</th>
+                            <th>Amount</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -209,9 +217,11 @@ const Swap = () => {
                                 <tr key={order.orderId.toString()}>
                                     <td>{order.orderId.toString()}</td>
                                     <td>USDC</td>
-                                    <td>{+order.amount.toString() / 10 ** 18}</td>
                                     <td>{order.fromChainId}</td>
+                                    <td>{+order.amount.toString() / 10 ** 18}</td>
                                     <td>{order.toChainId}</td>
+                                    <td>111 BNB</td>
+                                    <td>{order.filled ? "Filled" : "open"}</td>
                                     <td className="buyButtonWrapper" ><button className="buyButton" onClick={() => onBuyOrder(order)}>Buy</button></td>
                                 </tr>
                             )

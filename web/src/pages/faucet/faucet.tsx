@@ -13,7 +13,7 @@ export const Faucet = () => {
         e.preventDefault()
         let target = e.target as HTMLInputElement;
         if (chainName) {
-            let list = CONFIG.TokenList.filter(k => (k.Name === chainName))[0].List
+            let list = CONFIG.FaucetTokenList.filter(k => (k.Name === chainName))[0].List
             let tokenAddress = list.filter(k => (k.name == target.textContent))[0].address;
             console.log(`token:${target.textContent} address:${tokenAddress}, chain:${chainName}`)
             await faucet(tokenAddress)
@@ -22,7 +22,7 @@ export const Faucet = () => {
         }
     }
     const getTokenList = () => {
-        return (chainName) ? CONFIG.TokenList.filter(k => (k.Name === chainName))[0].List : []
+        return (chainName) ? CONFIG.FaucetTokenList.filter(k => (k.Name === chainName))[0].List : []
     }
 
     return (

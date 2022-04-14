@@ -1,5 +1,4 @@
-import React from 'react';
-import { useContext } from "react";
+import React, { useContext } from "react";
 import Web3Context, { Web3Provider } from "../../context/Web3Context"
 import { Navbar, Container, Nav, NavDropdown, NavItem } from 'react-bootstrap'
 import { Link } from "react-router-dom";
@@ -14,7 +13,7 @@ const PageHead = () => {
         <img className="logo" src="https://miro.medium.com/fit/c/176/176/1*LRJ2wZUqNQHTOm1KkRlmUA.jpeg" alt="logo" />
         <Navbar.Brand as={Link} className="headerText" to="/">Bridge</Navbar.Brand>
         <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">  </Nav>
+            <Nav className="me-auto"></Nav>
             <Nav>
                 <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
             </Nav>

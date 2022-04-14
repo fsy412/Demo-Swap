@@ -30,6 +30,7 @@ export const Web3Provider = (props: any) => {
     matchOrder: async (fromChainId, chainId, orderId, asset, amount) => { },
     getSwapAddress: (chainId) => { },
     faucet: (tokenAddress) => { },
+    getBalance: async (tokenName, chain) => { },
   }
 
   useEffect(() => {
@@ -78,13 +79,13 @@ export const Web3Provider = (props: any) => {
   };
 
   functionsToExport.getOrderList = async () => {
-    let provider = new ethers.providers.JsonRpcProvider("https://data-seed-prebsc-2-s2.binance.org:8545");
+    let provider = new ethers.providers.JsonRpcProvider(CONFIG.BSC.Rpc);
     const contract = new ethers.Contract(CONFIG.BSC.SwapAddress, Swap.abi, provider)
     let orderList = await contract.query_all_orders()
     // console.log('getOrderList bsc orders', orderList)
 
     {
-      let provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/f6673495815e4dcbbd271ef93de098ec");
+      let provider = new ethers.providers.JsonRpcProvider(CONFIG.ETH.Rpc);
       const contract = new ethers.Contract(CONFIG.ETH.SwapAddress, Swap.abi, provider)
       let orders = await contract.query_all_orders()
       // console.log('getOrderList eth orders', orders)
@@ -115,6 +116,22 @@ export const Web3Provider = (props: any) => {
     const contract = new ethers.Contract(tokenAddress, Token.abi, signer)
     const transaction = await contract.faucet();
     await transaction.wait()
+  };
+
+  functionsToExport.getBalance = async (tokenName, chain) => {
+    let provider;
+    if (chain == "BSCTEST") {
+      provider = new ethers.providers.JsonRpcProvider(CONFIG.BSC.Rpc);
+    } else if (chain == "RINKEBY") {
+      provider = new ethers.providers.JsonRpcProvider(CONFIG.ETH.Rpc);
+    }
+
+    let list = CONFIG.FaucetTokenList.filter(k => (k.Name === chain))[0].List
+    let tokenAddress = list.filter(k => (k.name == tokenName))[0].address;
+    const contract = new ethers.Contract(tokenAddress, Token.abi, provider)
+    let balance = await contract.balanceOf(account)
+    console.log('getBalance', 'token', tokenName, 'token address', tokenAddress, balance.toString())
+    return balance
   };
 
   return (<Web3Context.Provider value={{ account, chainName, ...functionsToExport }}>
