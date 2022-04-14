@@ -1,4 +1,4 @@
-import { Container, Dropdown, Table, Row, Col } from "react-bootstrap"
+import { Container, Dropdown, Table, Row, Col, Toast } from "react-bootstrap"
 import { useEffect, useState, useContext, useRef } from "react";
 import Web3Context, { Web3Provider } from "../../context/Web3Context"
 import "./index.scss"
@@ -48,7 +48,7 @@ const Swap = () => {
     const onFromChainSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
-        if (fromAsset) {
+        if (fromAsset != 'Select Token') {
             let balance = await getBalance(fromAsset, chain)
             setFromBalance(+balance.toString() / 1e18);
         }
@@ -62,7 +62,7 @@ const Swap = () => {
     const onToChainSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
-        if (chain) {
+        if (toAsset != 'Select Token') {
             let balance = await getBalance(toAsset, chain);
             setToBalance(+balance.toString() / 1e18);
         }
@@ -90,7 +90,7 @@ const Swap = () => {
         console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', refFromAmount.current?.value)
         console.log('to asset:', getToAssetAddress(), ' chain:', toChainId, 'amount:', refToAmount.current?.value)
         console.log('swap address:', getSwapAddress(chainName))
-        return
+       
         // approve swap 
         let amount = ethers.utils.parseEther('1')
         await approveSwap(getToAssetAddress(), getSwapAddress(chainName), amount)
