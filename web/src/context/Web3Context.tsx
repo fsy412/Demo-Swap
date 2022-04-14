@@ -41,14 +41,16 @@ export const Web3Provider = (props: any) => {
         setBlockchainId(chainId);
         (chainId === 97) ? setChainName("BSCTEST") : setChainName("RINKEBY")
 
-        // if (blockchainId != 0) {
-        //   const addresses = await provider.listAccounts();
-        //   if (addresses.length) {
-        //     setAccount(addresses[0]);
-        //   } else {
-        //     return;
-        //   }
-        // }
+        if (blockchainId != 0) {
+          const addresses = await provider.listAccounts();
+          if (addresses.length) {
+            setAccount(addresses[0]);
+            const signer = provider.getSigner();
+            setSigner(signer);
+          } else {
+            return;
+          }
+        }
       }
     };
     checkConnection();
@@ -56,10 +58,7 @@ export const Web3Provider = (props: any) => {
 
   functionsToExport.connectWallet = async () => {
     try {
-      const web3Modal = new Web3Modal();
-      const connection = await web3Modal.connect();
-      const provider = new ethers.providers.Web3Provider(connection);
-
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const userAddress = await signer.getAddress();
       const { chainId } = await provider.getNetwork()
