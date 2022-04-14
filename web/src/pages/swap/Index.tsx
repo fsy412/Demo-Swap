@@ -1,5 +1,5 @@
 import { Container, Dropdown, Table, Row, Col } from "react-bootstrap"
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import Web3Context, { Web3Provider } from "../../context/Web3Context"
 import "./index.scss"
 import { ethers } from 'ethers'
@@ -15,11 +15,14 @@ const Swap = () => {
 
     const [toChainId, setToChainId] = useState('Select Chain');
     const [toAsset, setToAsset] = useState('Select Token');
-    const [toAmount, setToAmount] = useState(0);
+    // const [toAmount, setToAmount] = useState(0);
     const [toBalance, setToBalance] = useState(0);
 
     const [orders, setOrders] = useState<Order[]>([]);
     const [orderCount, setOrderCount] = useState(0);
+
+    const refFromAmount = useRef<HTMLInputElement>(null);
+    const refToAmount = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -45,8 +48,10 @@ const Swap = () => {
     const onFromChainSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
-        let balance = await getBalance(fromAsset, chain)
-        setFromBalance(+balance.toString() / 1e18);
+        if (fromAsset) {
+            let balance = await getBalance(fromAsset, chain)
+            setFromBalance(+balance.toString() / 1e18);
+        }
         setFormChainId(chain)
     }
     const onToTokenSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
@@ -57,13 +62,15 @@ const Swap = () => {
     const onToChainSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
-        let balance = await getBalance(toAsset, chain);
-        setToBalance(+balance.toString() / 1e18);
+        if (chain) {
+            let balance = await getBalance(toAsset, chain);
+            setToBalance(+balance.toString() / 1e18);
+        }
         setToChainId(chain)
     }
-    const onFromInputChange = (e) => { console.log('onFromInputChange') }
+    const onFromInputChange = (e) => { }
 
-    const onToInputChange = (e) => { console.log('onToInputChange') }
+    const onToInputChange = (e) => { }
 
     const getFromAssetAddress = () => {
         let list = CONFIG.TokenList.filter(k => (k.Name === chainName))[0].List
@@ -80,9 +87,10 @@ const Swap = () => {
 
     const onCreateOrder = async () => {
         console.log('onCreateOrder')
-        console.log('from asset:', getFromAssetAddress(), 'from chain:', fromChainId)
-        console.log('to asset:', getToAssetAddress(), 'to chain:', toChainId)
+        console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', refFromAmount.current?.value)
+        console.log('to asset:', getToAssetAddress(), ' chain:', toChainId, 'amount:', refToAmount.current?.value)
         console.log('swap address:', getSwapAddress(chainName))
+        return
         // approve swap 
         let amount = ethers.utils.parseEther('1')
         await approveSwap(getToAssetAddress(), getSwapAddress(chainName), amount)
@@ -134,7 +142,7 @@ const Swap = () => {
                 </div>
                 <div className="inputBox">
                     <div className="inputWrapper">
-                        <input className="inputControl" type="number" onChange={onFromInputChange}></input>
+                        <input ref={refFromAmount} className="inputControl" type="number" onChange={onFromInputChange}></input>
                     </div>
                     <div className="selectWrapper">
                         <Dropdown className="tokenSelect" onSelect={onFromTokenSelect}>
@@ -169,7 +177,7 @@ const Swap = () => {
                 </div>
                 <div className="inputBox">
                     <div className="inputWrapper">
-                        <input className="inputControl" type="number" onChange={onToInputChange}></input>
+                        <input ref={refToAmount} className="inputControl" type="number" onChange={onToInputChange}></input>
                     </div>
                     <div className="selectWrapper">
                         <Dropdown className="tokenSelect" onSelect={onToTokenSelect}>

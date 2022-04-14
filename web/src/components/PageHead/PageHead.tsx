@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 import "./PageHead.css"
 
 const PageHead = () => {
-    const { account, connectWallet } = useContext(Web3Context);
+    const { account, chainName, connectWallet } = useContext(Web3Context);
     const short = (val: string) => {
-        return val.substring(0, 6) + '...' + val.substring(val.length - 4, val.length)
+        return chainName + " (" + val.substring(0, 6) + '...' + val.substring(val.length - 4, val.length) + ")"
     }
     return (<Navbar bg="light" expand="lg">
         <img className="logo" src="https://miro.medium.com/fit/c/176/176/1*LRJ2wZUqNQHTOm1KkRlmUA.jpeg" alt="logo" />

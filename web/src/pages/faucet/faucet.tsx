@@ -7,7 +7,7 @@ import { Toast } from "../../components/Toast/Toast"
 
 export const Faucet = () => {
     const { account, chainName, faucet } = useContext(Web3Context);
-    const [showA, setShowA] = useState(true);
+    // const [showA, setShowA] = useState(true);
 
     const handleSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
@@ -17,8 +17,6 @@ export const Faucet = () => {
             let tokenAddress = list.filter(k => (k.name == target.textContent))[0].address;
             console.log(`token:${target.textContent} address:${tokenAddress}, chain:${chainName}`)
             await faucet(tokenAddress)
-
-            setShowA(true);
         }
     }
     const getTokenList = () => {
