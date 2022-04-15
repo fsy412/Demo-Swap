@@ -107,9 +107,10 @@ const Swap = () => {
 
         console.log('createOrder start')
         await createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to)
-        setCreatingOrder(true)
+        setCreatingOrder(false)
         return
         // TEST
+        // setCreatingOrder(true)
         // approve swap 
         // let amount = ethers.utils.parseEther('1')
         // await approveSwap(CONFIG.BSC.USDCAddress, CONFIG.BSC.SwapAddress, amount)
@@ -124,6 +125,7 @@ const Swap = () => {
 
         // console.log('createOrder start')
         // await createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to)
+        // setCreatingOrder(false)
     }
 
     const onBuyOrder = async (order) => {

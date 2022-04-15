@@ -59,11 +59,12 @@ export const Web3Provider = (props: any) => {
 
   functionsToExport.connectWallet = async () => {
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const web3Modal = new Web3Modal();
+      const connection = await web3Modal.connect();
+      const provider = new ethers.providers.Web3Provider(connection);
       const signer = provider.getSigner();
       const userAddress = await signer.getAddress();
       const { chainId } = await provider.getNetwork()
-
       setBlockchainId(chainId)
       setAccount(userAddress);
       setSigner(signer);
