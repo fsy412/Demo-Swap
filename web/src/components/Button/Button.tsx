@@ -8,7 +8,7 @@ export const Button: React.FC<{
     onclick: () => Promise<void>
 }> = ({ display, spinner, onclick }) => {
     return (
-        <button onClick={() => onclick} className="createButton">{display}{spinner ? (<Spinner className="spinner" animation="border" />) : null}</button>
+        <button onClick={() => { onclick() }} className="createButton">{display}{spinner ? (<Spinner className="spinner" animation="border" />) : null}</button>
     )
 }
 
