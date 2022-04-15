@@ -5,6 +5,7 @@ import "./index.scss"
 import { ethers } from 'ethers'
 import { CONFIG } from '../../config/chain'
 import { Order } from "../../models/models"
+import { Button } from "../../components/Button/Button"
 
 const Swap = () => {
     const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress, getBalance } = useContext(Web3Context);
@@ -23,6 +24,8 @@ const Swap = () => {
 
     const refFromAmount = useRef<HTMLInputElement>(null);
     const refToAmount = useRef<HTMLInputElement>(null);
+
+    const [creatingOrder, setCreatingOrder] = useState(Boolean);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -86,26 +89,27 @@ const Swap = () => {
     }
 
     const onCreateOrder = async () => {
+        setCreatingOrder(true)
         console.log('onCreateOrder')
         console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', refFromAmount.current?.value)
         console.log('to asset:', getToAssetAddress(), ' chain:', toChainId, 'amount:', refToAmount.current?.value)
         console.log('swap address:', getSwapAddress(chainName))
-       
+
         // approve swap 
-        let amount = ethers.utils.parseEther('1')
+        let amount = ethers.utils.parseEther(refFromAmount.current?.value)
         await approveSwap(getToAssetAddress(), getSwapAddress(chainName), amount)
         console.log('approve done')
         // create order
         let chain_from = fromChainId
         let asset_from = getFromAssetAddress()
-        let amount_from = ethers.utils.parseEther('1')
+        let amount_from = ethers.utils.parseEther(refFromAmount.current?.value)
         let chain_to = toChainId
         let asset_to = getToAssetAddress()
-        let amount_to = ethers.utils.parseEther('1')
+        let amount_to = ethers.utils.parseEther(refToAmount.current?.value)
 
         console.log('createOrder start')
         await createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to)
-
+        setCreatingOrder(true)
         return
         // TEST
         // approve swap 
@@ -129,6 +133,7 @@ const Swap = () => {
         await approveSwap(order.toTokenContract, getSwapAddress(chainName), order.amount.toString())
         await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.toTokenContract, order.amount)
     }
+
     return (
         <Container className="container">
             <div className="SelectionBox" >
@@ -200,11 +205,10 @@ const Swap = () => {
                     </div>
                 </div>
             </div>
-
             <div>
-                <button className="createButton" onClick={onCreateOrder}>Create Order</button>
+                {/* <button className="createButton" onClick={onCreateOrder}>Create Order</button> */}
+                <Button display={"Create Order"} spinner={creatingOrder} onclick={onCreateOrder}></Button>
             </div>
-
             <div>
                 <Table striped bordered hover variant="">
                     <thead className="tableHeader">
