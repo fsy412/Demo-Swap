@@ -6,25 +6,23 @@ import { ethers } from 'ethers'
 import { CONFIG } from '../../config/chain'
 import { Order } from "../../models/models"
 import { Button } from "../../components/Button/Button"
+import { formatNumber } from "../../util/foramt"
 
 const Swap = () => {
     const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress, getBalance } = useContext(Web3Context);
     const [fromChainId, setFormChainId] = useState('Select Chain');
     const [fromAsset, setFormAsset] = useState('Select Token');
-    const [fromAmount, setFromAmount] = useState('');
-    const [fromBalance, setFromBalance] = useState(0);
+    // const [fromAmount, setFromAmount] = useState('');
+    const [fromBalance, setFromBalance] = useState('0');
 
     const [toChainId, setToChainId] = useState('Select Chain');
     const [toAsset, setToAsset] = useState('Select Token');
     // const [toAmount, setToAmount] = useState(0);
-    const [toBalance, setToBalance] = useState(0);
+    const [toBalance, setToBalance] = useState('0');
 
     const [orders, setOrders] = useState<Order[]>([]);
-    const [orderCount, setOrderCount] = useState(0);
-
     const refFromAmount = useRef<HTMLInputElement>(null);
     const refToAmount = useRef<HTMLInputElement>(null);
-
     const [creatingOrder, setCreatingOrder] = useState(Boolean);
 
     useEffect(() => {
@@ -53,7 +51,7 @@ const Swap = () => {
         let chain = (e.target as HTMLInputElement).textContent;
         if (fromAsset != 'Select Token') {
             let balance = await getBalance(fromAsset, chain)
-            setFromBalance(+balance.toString() / 1e18);
+            setFromBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
         }
         setFormChainId(chain)
     }
@@ -67,7 +65,7 @@ const Swap = () => {
         let chain = (e.target as HTMLInputElement).textContent;
         if (toAsset != 'Select Token') {
             let balance = await getBalance(toAsset, chain);
-            setToBalance(+balance.toString() / 1e18);
+            setToBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
         }
         setToChainId(chain)
     }
@@ -142,7 +140,7 @@ const Swap = () => {
                         From
                     </span>
                     <span className="textBalance">
-                        Balance: {fromBalance}
+                        Balance: {formatNumber(fromBalance, 3)}
                     </span>
                 </div>
                 <div className="inputBox">
@@ -230,7 +228,7 @@ const Swap = () => {
                                     <td>{order.orderId.toString()}</td>
                                     <td>USDC</td>
                                     <td>{order.fromChainId}</td>
-                                    <td>{+order.amount.toString() / 10 ** 18}</td>
+                                    <td>{formatNumber(ethers.utils.formatEther(order.amount.toString()), 3)}</td>
                                     <td>{order.toChainId}</td>
                                     <td>111 BNB</td>
                                     <td>{order.filled ? "Filled" : "open"}</td>
