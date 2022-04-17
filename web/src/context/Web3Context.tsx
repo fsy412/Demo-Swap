@@ -74,6 +74,7 @@ export const Web3Provider = (props: any) => {
   };
 
   functionsToExport.approveSwap = async (tokenAddress, swapAddress, amount) => {
+    console.log('approveSwap tokenAddress:', tokenAddress, 'swapAddress:', swapAddress, 'amount:', amount)
     const contract = new ethers.Contract(tokenAddress, Token.abi, signer)
     const transaction = await contract.approve(swapAddress, amount);
     await transaction.wait()

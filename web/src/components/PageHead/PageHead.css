@@ -3,22 +3,23 @@
     margin-left: 30px;
 }
 
-.headerText{
+.headerText {
+    font-weight: bold;
     font-size: 25px;
-    margin-left: 20px;
+    margin-left: 2px;
 }
 
-.faucet{
-    font-weight: bold; 
+.faucet {
+    font-weight: bold;
     margin-right: 10px;
 }
 
-.wallet{
-    font-weight: bold; 
+.wallet {
+    font-weight: bold;
     margin-right: 30px;
 }
 
-.disconnect{
-    font-weight: bold; 
+.disconnect {
+    font-weight: bold;
     margin-right: 30px;
 }

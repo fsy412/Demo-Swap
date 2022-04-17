@@ -6,18 +6,16 @@ import { ethers } from 'ethers'
 import { CONFIG } from '../../config/chain'
 import { Order } from "../../models/models"
 import { Button } from "../../components/Button/Button"
-import { formatNumber } from "../../util/foramt"
+import { formatNumber } from "../../util/format"
 
 const Swap = () => {
     const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress, getBalance } = useContext(Web3Context);
     const [fromChainId, setFormChainId] = useState('Select Chain');
     const [fromAsset, setFormAsset] = useState('Select Token');
-    // const [fromAmount, setFromAmount] = useState('');
     const [fromBalance, setFromBalance] = useState('0');
 
     const [toChainId, setToChainId] = useState('Select Chain');
     const [toAsset, setToAsset] = useState('Select Token');
-    // const [toAmount, setToAmount] = useState(0);
     const [toBalance, setToBalance] = useState('0');
 
     const [orders, setOrders] = useState<Order[]>([]);
@@ -80,8 +78,8 @@ const Swap = () => {
         return tokenAddress
     }
     const getToAssetAddress = () => {
-        let list = CONFIG.TokenList.filter(k => (k.Name === chainName))[0].List
-        let tokenAddress = list.filter(k => (k.name == fromAsset))[0].address;
+        let list = CONFIG.TokenList.filter(k => (k.Name === toChainId))[0].List
+        let tokenAddress = list.filter(k => (k.name == toAsset))[0].address;
         // console.log(`token:${formAsset} address:${tokenAddress}, chain:${chainName}`)
         return tokenAddress
     }
@@ -95,12 +93,12 @@ const Swap = () => {
 
         // approve swap 
         let amount = ethers.utils.parseEther(refFromAmount.current?.value)
-        await approveSwap(getToAssetAddress(), getSwapAddress(chainName), amount)
+        await approveSwap(getFromAssetAddress(), getSwapAddress(chainName), amount)
         console.log('approve done')
         // create order
         let chain_from = fromChainId
         let asset_from = getFromAssetAddress()
-        let amount_from = ethers.utils.parseEther(refFromAmount.current?.value)
+        let amount_from = amount
         let chain_to = toChainId
         let asset_to = getToAssetAddress()
         let amount_to = ethers.utils.parseEther(refToAmount.current?.value)
@@ -111,27 +109,32 @@ const Swap = () => {
         return
         // TEST
         // setCreatingOrder(true)
-        // approve swap 
         // let amount = ethers.utils.parseEther('1')
         // await approveSwap(CONFIG.BSC.USDCAddress, CONFIG.BSC.SwapAddress, amount)
         // console.log('approve done')
         // // create order
         // let chain_from = "BSCTEST"
         // let asset_from = CONFIG.BSC.USDCAddress
-        // let amount_from = ethers.utils.parseEther('1')
         // let chain_to = "RINKEBY" // ethereum rinkeby
         // let asset_to = CONFIG.ETH.USDCAddress
         // let amount_to = ethers.utils.parseEther('1')
 
         // console.log('createOrder start')
-        // await createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to)
+        // await createOrder(chain_from, asset_from, amount, chain_to, asset_to, amount_to)
         // setCreatingOrder(false)
     }
 
     const onBuyOrder = async (order) => {
+        console.log('onBuyOrder', order)
         console.log('swap address', getSwapAddress(chainName), 'token', order.tokenContract, 'orderId', order.orderId.toString(), 'amount', order.amount.toString())
         await approveSwap(order.toTokenContract, getSwapAddress(chainName), order.amount.toString())
         await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.toTokenContract, order.amount)
+    }
+
+    const getTokenName = (address: string, chain: string) => {
+        let list = CONFIG.TokenList.filter(k => (k.Name === chain))[0].List
+        let name = list.filter(k => (k.address === address))[0]?.name
+        return name
     }
 
     return (
@@ -228,12 +231,12 @@ const Swap = () => {
                             return (
                                 <tr key={order.orderId.toString()}>
                                     <td>{order.orderId.toString()}</td>
-                                    <td>USDC</td>
+                                    <td>{getTokenName(order.tokenContract, order.fromChainId)}</td>
                                     <td>{order.fromChainId}</td>
                                     <td>{formatNumber(ethers.utils.formatEther(order.amount.toString()), 3)}</td>
                                     <td>{order.toChainId}</td>
-                                    <td>111 BNB</td>
-                                    <td>{order.filled ? "Filled" : "open"}</td>
+                                    <td>{formatNumber(ethers.utils.formatEther(order.toAmount.toString()), 3)} {getTokenName(order.toTokenContract, order.toChainId)}</td>
+                                    <td>{order.filled ? "Filled" : "Open"}</td>
                                     <td className="buyButtonWrapper" ><button className="buyButton" onClick={() => onBuyOrder(order)}>Buy</button></td>
                                 </tr>
                             )
