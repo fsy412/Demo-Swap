@@ -115,21 +115,6 @@ const Swap = () => {
         await createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to)
         setCreatingOrder(false)
         return
-        // TEST
-        // setCreatingOrder(true)
-        // let amount = ethers.utils.parseEther('1')
-        // await approveSwap(CONFIG.BSC.USDCAddress, CONFIG.BSC.SwapAddress, amount)
-        // console.log('approve done')
-        // // create order
-        // let chain_from = "BSCTEST"
-        // let asset_from = CONFIG.BSC.USDCAddress
-        // let chain_to = "RINKEBY" // ethereum rinkeby
-        // let asset_to = CONFIG.ETH.USDCAddress
-        // let amount_to = ethers.utils.parseEther('1')
-
-        // console.log('createOrder start')
-        // await createOrder(chain_from, asset_from, amount, chain_to, asset_to, amount_to)
-        // setCreatingOrder(false)
     }
 
     const onBuyOrder = async (order) => {
@@ -251,11 +236,7 @@ const Swap = () => {
                                     <td>{order.toChainId}</td>
                                     <td>{formatNumber(ethers.utils.formatEther(order.toAmount.toString()), 3)} {getTokenName(order.toTokenContract, order.toChainId)}</td>
                                     <td>{order.filled ? "Filled" : "Open"}</td>
-                                    {
-                                        order.filled ?
-                                            <td></td> :
-                                            <td className="buyButtonWrapper" > <button className="buyButton" onClick={() => onBuyOrder(order)}>Buy</button></td>
-                                    }
+                                    {order.filled ? <td></td> : <td className="buyButtonWrapper" > <button className="buyButton" onClick={() => onBuyOrder(order)}>Buy</button></td>}
                                 </tr>
                             )
                         })}
