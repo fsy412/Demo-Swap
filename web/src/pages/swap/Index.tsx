@@ -229,7 +229,7 @@ const Swap = () => {
                     <tbody className="tableBody">
                         {orders.map((order: Order) => {
                             return (
-                                <tr key={order.orderId.toString()}>
+                                <tr key={order.orderId.toString()+ order.fromChainId}>
                                     <td>{order.orderId.toString()}</td>
                                     <td>{getTokenName(order.tokenContract, order.fromChainId)}</td>
                                     <td>{order.fromChainId}</td>
