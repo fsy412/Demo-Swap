@@ -81,19 +81,25 @@ export const Web3Provider = (props: any) => {
   };
 
   functionsToExport.getOrderList = async () => {
-    let provider = new ethers.providers.JsonRpcProvider(CONFIG.BSC.Rpc);
-    const contract = new ethers.Contract(CONFIG.BSC.SwapAddress, Swap.abi, provider)
-    let orderList = await contract.query_all_orders()
-    // console.log('getOrderList bsc orders', orderList)
+    let orderList = []
+    try {
+      let provider = new ethers.providers.JsonRpcProvider(CONFIG.BSC.Rpc);
+      const contract = new ethers.Contract(CONFIG.BSC.SwapAddress, Swap.abi, provider)
+      orderList = await contract.query_all_orders()
+      // console.log('getOrderList bsc orders', orderList)
 
-    {
-      let provider = new ethers.providers.JsonRpcProvider(CONFIG.ETH.Rpc);
-      const contract = new ethers.Contract(CONFIG.ETH.SwapAddress, Swap.abi, provider)
-      let orders = await contract.query_all_orders()
-      // console.log('getOrderList eth orders', orders)
-      orderList = orderList.concat(orders)
+      {
+        let provider = new ethers.providers.JsonRpcProvider(CONFIG.ETH.Rpc);
+        const contract = new ethers.Contract(CONFIG.ETH.SwapAddress, Swap.abi, provider)
+        let orders = await contract.query_all_orders()
+        // console.log('getOrderList eth orders', orders)
+        orderList = orderList.concat(orders)
+      }
+    } catch (error) {
+
     }
     return orderList
+
   };
 
   // function create_order(uint256 chain_from, address asset_from, uint256 amount_from, uint256 chain_to, address asset_to, uint amount_to) public returns (bool) {

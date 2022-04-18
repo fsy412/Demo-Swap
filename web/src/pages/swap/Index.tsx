@@ -52,12 +52,13 @@ const Swap = () => {
         let token = (e.target as HTMLInputElement).textContent;
         setFormAsset(token)
     }
-    const onFromChainSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
+    const onFromChainSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
         if (fromAsset != 'Select Token') {
-            let balance = await getBalance(fromAsset, chain)
-            setFromBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
+            getBalance(fromAsset, chain).then((balance => {
+                setFromBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
+            })).catch(err => console.error(err))
         }
         setFormChainId(chain)
     }
@@ -70,8 +71,9 @@ const Swap = () => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
         if (toAsset != 'Select Token') {
-            let balance = await getBalance(toAsset, chain);
-            setToBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
+            getBalance(fromAsset, chain).then((balance => {
+                setToBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
+            })).catch(err => console.error(err))
         }
         setToChainId(chain)
     }
