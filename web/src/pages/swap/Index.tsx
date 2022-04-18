@@ -119,11 +119,11 @@ const Swap = () => {
 
     const onBuyOrder = async (order) => {
         console.log('onBuyOrder', order)
-        console.log('approveSwap', getSwapAddress(chainName), 'token', order.toTokenContract, 'orderId', order.orderId.toString(), 'amount', order.amount.toString())
-        console.log('matchOrder', 'fromChainId:', order.fromChainId, 'toChainId', order.toChainId, 'orderId', +order.orderId.toString(), 'token', order.toTokenContract, 'amount', order.amount.toString())
+        console.log('approveSwap', getSwapAddress(chainName), 'token', order.toTokenContract, 'orderId', order.orderId.toString(), 'amount', order.toAmount.toString())
+        console.log('matchOrder', 'fromChainId:', order.fromChainId, 'toChainId', order.toChainId, 'orderId', +order.orderId.toString(), 'token', order.toTokenContract, 'amount', order.toAmount.toString())
 
-        await approveSwap(order.toTokenContract, getSwapAddress(chainName), order.amount.toString())
-        await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.toTokenContract, order.amount, order.sender)
+        await approveSwap(order.toTokenContract, getSwapAddress(chainName), order.toAmount.toString())
+        await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.toTokenContract, order.toAmount, order.sender)
     }
 
     const getTokenName = (address: string, chain: string) => {
