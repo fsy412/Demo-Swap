@@ -134,14 +134,20 @@ const Swap = () => {
 
     const onBuyOrder = async (order) => {
         console.log('onBuyOrder', order)
-        console.log('swap address', getSwapAddress(chainName), 'token', order.tokenContract, 'orderId', order.orderId.toString(), 'amount', order.amount.toString())
+        console.log('approveSwap', getSwapAddress(chainName), 'token', order.toTokenContract, 'orderId', order.orderId.toString(), 'amount', order.amount.toString())
+        console.log('matchOrder', 'fromChainId:', order.fromChainId, 'toChainId', order.toChainId, 'orderId', +order.orderId.toString(), 'token', order.toTokenContract, 'amount', order.amount.toString())
+
         await approveSwap(order.toTokenContract, getSwapAddress(chainName), order.amount.toString())
-        await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.toTokenContract, order.amount)
+        await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.toTokenContract, order.amount, order.sender)
     }
 
     const getTokenName = (address: string, chain: string) => {
-        let list = CONFIG.TokenList.filter(k => (k.Name === chain))[0].List
-        let name = list.filter(k => (k.address === address))[0]?.name
+        // console.log('address', address, 'chain', chain)
+        let list = CONFIG.TokenList.filter(k => (k.Name === chain))[0]?.List
+        let name
+        if (list) {
+            name = list.filter(k => (k.address === address))[0]?.name
+        }
         return name
     }
 
@@ -237,7 +243,7 @@ const Swap = () => {
                     <tbody className="tableBody">
                         {orders.map((order: Order) => {
                             return (
-                                <tr key={order.orderId.toString()+ order.fromChainId}>
+                                <tr key={order.orderId.toString() + order.fromChainId}>
                                     <td>{order.orderId.toString()}</td>
                                     <td>{getTokenName(order.tokenContract, order.fromChainId)}</td>
                                     <td>{order.fromChainId}</td>

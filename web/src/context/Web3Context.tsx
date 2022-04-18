@@ -27,7 +27,7 @@ export const Web3Provider = (props: any) => {
     approveSwap: async (erc20, swap, amount) => { },
     getOrderList: (swapAddress) => { },
     createOrder: async (chainFrom, asset_from, amountFrom, chainTo, assetTo, amountTo) => { },
-    matchOrder: async (fromChainId, chainId, orderId, asset, amount) => { },
+    matchOrder: async (fromChainId, chainId, orderId, asset, amount, payee) => { },
     getSwapAddress: (chainId) => { },
     faucet: (tokenAddress) => { },
     getBalance: async (tokenName, chain) => { },
@@ -98,15 +98,17 @@ export const Web3Provider = (props: any) => {
 
   // function create_order(uint256 chain_from, address asset_from, uint256 amount_from, uint256 chain_to, address asset_to, uint amount_to) public returns (bool) {
   functionsToExport.createOrder = async (chainFrom, assetFrom, amountFrom, chainTo, assetTo, amountTo) => {
+    console.log("chainFrom", chainFrom, "assetFrom", assetFrom, "amountFrom", amountFrom)
+    console.log("chainTo", chainTo, "assetTo", assetTo, "amountTo", amountTo)
     let swapContract = getContract(getChainSwapAddress(chainFrom), Swap.abi)
     const transaction = await swapContract.create_order(chainFrom, assetFrom, amountFrom, chainTo, assetTo, amountTo)
     await transaction.wait()
   };
 
-  functionsToExport.matchOrder = async (fromChainId, chainId, orderId, asset, amount) => {
-    console.log("matchOrder", 'from chain:', fromChainId, 'current chain:', chainId, 'orderId', orderId, 'asset:', asset, 'amount:', amount.toString())
+  functionsToExport.matchOrder = async (fromChainId, chainId, orderId, asset, amount, payee) => {
+    console.log("matchOrder", 'from chain:', fromChainId, 'current chain:', chainId, 'orderId', orderId, 'asset:', asset, 'amount:', amount.toString(), 'payee', payee)
     let swapContract = getContract(getChainSwapAddress(chainId), Swap.abi)
-    const transaction = await swapContract.match_order(fromChainId, orderId, asset, amount.toString())
+    const transaction = await swapContract.match_order(fromChainId, orderId, asset, amount.toString(), payee)
     await transaction.wait()
   };
 

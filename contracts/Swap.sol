@@ -19,13 +19,14 @@ contract Swap is ContractBase {
         address toTokenContract;
         uint256 amount;
         uint256 toAmount;
-        bytes32 hashlock;
+        // bytes32 hashlock;
         uint256 createTime;
         // uint256 timelock; // locked UNTIL this time.
         bool cancelled;
         string fromChainId;
         string toChainId;
         bool filled;
+        bool transfer;
     }
 
     struct OrderFill {
@@ -39,6 +40,7 @@ contract Swap is ContractBase {
         uint256 timelock; // locked UNTIL this time.
         address payee;
         string status;
+        bool transfer;
     }
 
     // Cross-chain destination contract map
@@ -77,11 +79,12 @@ contract Swap is ContractBase {
             asset_to,
             amount_from,
             amount_to,
-            sha256(abi.encodePacked(uint256(0))),
+            // sha256(abi.encodePacked(uint256(0))),
             block.timestamp,
             false,
             chain_from,
             chain_to,
+            false,
             false
         );
         _orderIds = _orderIds + 1;
@@ -104,7 +107,8 @@ contract Swap is ContractBase {
         string calldata chain_id,
         uint256 order_id,
         address asset,
-        uint256 amount
+        uint256 amount, 
+        address payee
     ) public {
         bool ret = IERC20(asset).transferFrom(msg.sender, address(this), amount);
         require(ret, "transfer to swap failed");
@@ -117,8 +121,9 @@ contract Swap is ContractBase {
             sha256(abi.encodePacked(uint256(0))),
             block.timestamp,
             block.timestamp + 3600,
-            msg.sender,
-            "created"
+            payee,
+            "created",
+            false
         );
         _fillOrderIds = _fillOrderIds + 1;
 
@@ -173,6 +178,7 @@ contract Swap is ContractBase {
             payee_address,
             order.amount
         );
+        order.transfer = ret;
         // require(ret, "transfer payee failed");
       
         // send receive_transfer_asset
@@ -202,6 +208,7 @@ contract Swap is ContractBase {
             if (order.orderId == order_id){
                 bool ret = IERC20(order.tokenContract).transfer(order.payee, order.amount);
                 order.status = "done";
+                order.transfer = ret;
             }
         }
     }
