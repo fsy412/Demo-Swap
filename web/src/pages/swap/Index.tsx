@@ -77,7 +77,13 @@ const Swap = () => {
         }
         setToChainId(chain)
     }
-    const onFromInputChange = (e) => { }
+    const onFromInputChange = (e) => {
+        const value = e.target.value.replace(/[^\d]/, "");
+        console.log(value)
+        if (+value !== 0) {
+          
+        }
+    }
 
     const onToInputChange = (e) => { }
 
@@ -151,7 +157,7 @@ const Swap = () => {
                 </div>
                 <div className="inputBox">
                     <div className="inputWrapper">
-                        <input ref={refFromAmount} className="inputControl" type="number" onChange={onFromInputChange}></input>
+                        <input ref={refFromAmount} className="inputControl" type="number" min="0" onChange={onFromInputChange} onWheel={event => event.currentTarget.blur()}></input>
                     </div>
                     <div className="selectWrapper">
                         <Dropdown className="tokenSelect" onSelect={onFromTokenSelect}>
@@ -186,7 +192,7 @@ const Swap = () => {
                 </div>
                 <div className="inputBox">
                     <div className="inputWrapper">
-                        <input ref={refToAmount} className="inputControl" type="number" onChange={onToInputChange}></input>
+                        <input ref={refToAmount} className="inputControl" type="number" min="0" onChange={onToInputChange} onWheel={event => event.currentTarget.blur()}></input>
                     </div>
                     <div className="selectWrapper">
                         <Dropdown className="tokenSelect" onSelect={onToTokenSelect}>
