@@ -7,9 +7,9 @@ import { CONFIG } from '../../config/chain'
 import { Order } from "../../models/models"
 import { Button } from "../../components/Button/Button"
 import { formatNumber } from "../../util/format"
-// import { useDispatch, useSelector } from 'react-redux';
-// import { walletActions } from "../../redux/actions"
-// import { walletSelectors } from "../../redux/selectors";
+import { useDispatch, useSelector } from 'react-redux';
+import { walletActions } from "../../redux/actions"
+import { walletSelectors } from "../../redux/selectors";
 
 const Swap = () => {
     const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress, getBalance } = useContext(Web3Context);
@@ -26,10 +26,10 @@ const Swap = () => {
     const refToAmount = useRef<HTMLInputElement>(null);
     const [creatingOrder, setCreatingOrder] = useState(Boolean);
 
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     useEffect(() => {
         setTimeout(() => {
-            // dispatch(walletActions.initialize());
+            dispatch(walletActions.initialize());
         }, 0);
 
         const fetchOrders = async () => {

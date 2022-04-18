@@ -5,10 +5,12 @@ import Web3Context, { Web3Provider } from './context/Web3Context';
 import Swap from './pages/swap/Index'
 import PageHead from "./components/PageHead/PageHead"
 import Faucet from "./pages/faucet/faucet"
-
+import { Provider } from 'react-redux';
+import store from "./redux/store"
 function App() {
   return (
     <div className="App">
+      <Provider store={store}>
       <Web3Provider>
         <BrowserRouter>
           <PageHead></PageHead>
@@ -16,6 +18,7 @@ function App() {
           <Route path="/faucet" exact component={() => <Faucet />} />
         </BrowserRouter>
       </Web3Provider>
+      </Provider>
     </div>
   )
 }
