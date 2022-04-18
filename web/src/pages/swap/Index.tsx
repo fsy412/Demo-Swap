@@ -251,7 +251,11 @@ const Swap = () => {
                                     <td>{order.toChainId}</td>
                                     <td>{formatNumber(ethers.utils.formatEther(order.toAmount.toString()), 3)} {getTokenName(order.toTokenContract, order.toChainId)}</td>
                                     <td>{order.filled ? "Filled" : "Open"}</td>
-                                    <td className="buyButtonWrapper" ><button className="buyButton" onClick={() => onBuyOrder(order)}>Buy</button></td>
+                                    {
+                                        order.filled ?
+                                            <td></td> :
+                                            <td className="buyButtonWrapper" > <button className="buyButton" onClick={() => onBuyOrder(order)}>Buy</button></td>
+                                    }
                                 </tr>
                             )
                         })}
