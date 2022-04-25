@@ -4,7 +4,7 @@ const networks = {
         ChanId: 97,
         SwapAddress: "0xc4c9e60452BBE2D0b57f040420644004F6f96d2F",
         USDCAddress: "0xB33f8CEE067392aBD54b1Ecec75edc2d6b193473",
-        Rpc:"https://data-seed-prebsc-2-s2.binance.org:8545"
+        Rpc:"https://data-seed-prebsc-1-s1.binance.org:8545"
     },
     ETH: {
         Name: "RINKEBY",

@@ -9,19 +9,35 @@ const PageHead = () => {
     const short = (val: string) => {
         return chainName + " (" + val.substring(0, 6) + '...' + val.substring(val.length - 4, val.length) + ")"
     }
-    return (<Navbar bg="light" expand="lg">
-        <img className="logo" src="logo.png" alt="logo" />
-        <Navbar.Brand as={Link} className="headerText" to="/">Bridge</Navbar.Brand>
-        <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto"></Nav>
-            <Nav>
-                <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
-            </Nav>
-            <Nav>
-                <Nav.Link as={Link} className="wallet" to="" onClick={connectWallet}> {account ? short(account?.toString()) : "Connect To Wallet"}</Nav.Link>
-            </Nav>
-        </Navbar.Collapse>
-    </Navbar>)
+    return (
+        <div className=" navbar" >
+        <Navbar bg="light" expand="md" >
+            <img className="logo" src="logo.png" alt="logo" />
+            <Navbar.Brand as={Link} className="headerText" to="/">Bridge</Navbar.Brand>
+            <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="me-auto"></Nav>
+                <Nav>
+                    <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link>
+                </Nav>
+                <Nav>
+                    <Nav.Link as={Link} className="faucet" to="/Bridge" >Bridge</Nav.Link>
+                </Nav>
+                <Nav>
+                    <Nav.Link as={Link} className="faucet" to="/Bridge" >Wallet</Nav.Link>
+                </Nav>
+                <Nav>
+                    <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
+                </Nav>
+                <Nav className="me-auto"></Nav>
+
+                <Nav>
+                    <Nav.Link as={Link} className="wallet" to="" onClick={connectWallet}> {account ? short(account?.toString()) : "Connect To Wallet"}</Nav.Link>
+                </Nav>
+            </Navbar.Collapse>
+        </Navbar>
+
+        </div>
+    )
 }
 
 export default PageHead;

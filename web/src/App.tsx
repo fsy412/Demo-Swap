@@ -7,6 +7,13 @@ import PageHead from "./components/PageHead/PageHead"
 import Faucet from "./pages/faucet/faucet"
 import { Provider } from 'react-redux';
 import store from "./redux/store"
+import   "./App.css"
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fas)
+
+
 function App() {
   return (
     <div className="App">
