@@ -6,12 +6,14 @@ import { ethers } from 'ethers'
 import { CONFIG } from '../../config/chain'
 import { Order } from "../../models/models"
 import { Button } from "../../components/Button/Button"
+// import { Selection } from "../../components/Selection/Selection"
 import { formatNumber } from "../../util/format"
 import { useDispatch, useSelector } from 'react-redux';
 import { walletActions } from "../../redux/actions"
 import { walletSelectors } from "../../redux/selectors";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCoffee, faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
+
 
 const Swap = () => {
     const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress, getBalance } = useContext(Web3Context);
@@ -147,39 +149,21 @@ const Swap = () => {
     }
 
     return (
-        <Container className="container">
+        <Container className="container-fluid swap">
             <div className="selectionWrapper">
                 <div className="title">
                     <span className="text">
                         Bridge Assets
                     </span>
                 </div>
-                <div className="SelectionBox" >
-                    <div className="textBox">
-                        <span className="textFrom">
-                            Send
-                        </span>
-                        <span className="textBalance">
-                            {/* Balance: {formatNumber(fromBalance, 3)} */}
-                        </span>
-                    </div>
-                    <div className="inputBox">
-                        {/* <div className="tokenSelect">
-                            <div className="dropdownWrapper">
-                                <Dropdown onSelect={onFromChainSelect}>
-                                    <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                                        <span className="spanChain"> {fromChainId}</span>
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item href="#"><img className="chainIcon" src="https://anyswap.exchange/static/media/ETH.cec4ef9a.svg"></img>RINKEBY</Dropdown.Item>
-                                        <Dropdown.Item href=""><img className="chainIcon" src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg"></img>BSCTEST</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </div>
 
-                        </div> */}
 
-                        <InputGroup className="mb-3 inputGroup">
+                <div className="selectionGroup">
+                    <div className="fromGroup">
+                        <div className="textFrom">
+                            <span>From</span>
+                        </div>
+                        <div className="dropdownWrapper">
                             <DropdownButton
                                 variant="outline-secondary"
                                 title={
@@ -189,6 +173,7 @@ const Swap = () => {
                                 }
                                 id="input-group-dropdown-1"
                             >
+
                                 <Dropdown.Item href="#">
                                     <div ><img src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg" /></div>
                                     <div>BSCTEST</div>
@@ -198,59 +183,52 @@ const Swap = () => {
                                     <div>RINKEBY</div>
                                 </Dropdown.Item>
                             </DropdownButton>
-                            <FormControl aria-label="Text input with dropdown button" />
-                            <DropdownButton
-                                variant="outline-secondary"
-                                  title={
-                                    <span >
-                                        <img src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png" /> BSCTEST
-                                    </span>
-                                }
-                                id="input-group-dropdown-2"
-                                align="end"
-                            >
-                                <Dropdown.Item href="#">DANT</Dropdown.Item>
-                            </DropdownButton>
-                        </InputGroup>
-
-                        {/* 
-                        <div className="inputWrapper">
-                            <input ref={refFromAmount} className="inputControl" type="number" min="0" onChange={onFromInputChange} onWheel={event => event.currentTarget.blur()}></input>
                         </div>
-                        <div className="selectWrapper">
-                            <Dropdown onSelect={onFromTokenSelect}>
-                                <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                                    <span className="spanChain">{fromAsset}</span>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item className="dropdownItem" href=""><img className="chanIcon" src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png"></img>USDC</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </div> */}
+                    </div>
 
-
+                    <div className="SelectionBox" >
+                        <div className="balanceInfo">
+                            <div>
+                                <span>
+                                    Send
+                                </span>
+                            </div>
+                            <div>
+                                <span>
+                                    max
+                                </span>
+                            </div>
+                        </div>
+                        <div className="selectionWrapper">
+                            <div>
+                                <div className="inputWrapper"><input /></div>
+                            </div>
+                            <div className="menuWrapper">
+                                <div className="menu">
+                                    <DropdownButton
+                                        variant="outline-secondary"
+                                        title="Dropdown"
+                                        id="input-group-dropdown-2"
+                                        align="end"
+                                    >
+                                        <Dropdown.Item href="#">Action</Dropdown.Item>
+                                        <Dropdown.Item href="#">Another action</Dropdown.Item>
+                                        <Dropdown.Item href="#">Something else here</Dropdown.Item>
+                                        <Dropdown.Divider />
+                                        <Dropdown.Item href="#">Separated link</Dropdown.Item>
+                                    </DropdownButton></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className="iconWrapper">
-                    <div className="iconArrow">
-                        <FontAwesomeIcon className="font" icon={faArrowDown} />
-                        <FontAwesomeIcon className="font" icon={faArrowUp} />
-                    </div>
-                </div>
+                <div className="direction"><img src="https://cbridge.celer.network/static/media/arrowupdown.963b18ea.svg" /></div>
 
-
-                <div className="SelectionBox" >
-                    <div className="textBox">
-                        <span className="textFrom">
-                            Receive
-                        </span>
-                        <span className="textBalance">
-                            {/* Balance: {toBalance} */}
-                        </span>
-                    </div>
-                    <div className="inputBox">
-
-                        <InputGroup className="mb-3">
+                <div className="selectionGroup">
+                    <div className="fromGroup">
+                        <div className="textFrom">
+                            <span>To</span>
+                        </div>
+                        <div className="dropdownWrapper">
                             <DropdownButton
                                 variant="outline-secondary"
                                 title={
@@ -260,85 +238,61 @@ const Swap = () => {
                                 }
                                 id="input-group-dropdown-1"
                             >
-                                <Dropdown.Item href="#">BSCTESTNET</Dropdown.Item>
-                                <Dropdown.Item href="#">RINKEBY</Dropdown.Item>
+
+                                <Dropdown.Item href="#">
+                                    <div ><img src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg" /></div>
+                                    <div>BSCTEST</div>
+                                </Dropdown.Item>
+                                <Dropdown.Item href="#">
+                                    <div ><img src="https://anyswap.exchange/static/media/ETH.cec4ef9a.svg" /></div>
+                                    <div>RINKEBY</div>
+                                </Dropdown.Item>
                             </DropdownButton>
-                            <FormControl aria-label="Text input with dropdown button" />
-                            <DropdownButton
-                                variant="outline-secondary"
-                                title="DANT"
-                                id="input-group-dropdown-2"
-                                align="end"
-                            >
-                                <Dropdown.Item href="#">DANT</Dropdown.Item>
-                            </DropdownButton>
-                        </InputGroup>
-                        {/* <div className="tokenSelect">
-                            <div className="dropdownWrapper">
-                                <Dropdown onSelect={onToChainSelect}>
-                                    <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                                        <span className="spanChain"> {toChainId}</span>
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item href="#"><img className="chainIcon" src="https://anyswap.exchange/static/media/ETH.cec4ef9a.svg"></img>RINKEBY</Dropdown.Item>
-                                        <Dropdown.Item href=""><img className="chainIcon" src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg"></img>BSCTEST</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
+                        </div>
+                    </div>
+
+                    <div className="SelectionBox" >
+                        <div className="balanceInfo">
+                            <div>
+                                <span>
+                                    Send
+                                </span>
+                            </div>
+                            <div>
+                                <span>
+                                    max
+                                </span>
                             </div>
                         </div>
-                        <div className="inputWrapper">
-                            <input ref={refFromAmount} className="inputControl" type="number" min="0" onChange={onFromInputChange} onWheel={event => event.currentTarget.blur()}></input>
+                        <div className="selectionWrapper">
+                            <div>
+                                <div className="inputWrapper"><input /></div>
+                            </div>
+                            <div className="menuWrapper">
+                                <div className="menu">
+                                    <DropdownButton
+                                        variant="outline-secondary"
+                                        title="Dropdown"
+                                        id="input-group-dropdown-2"
+                                        align="end"
+                                    >
+                                        <Dropdown.Item href="#">Action</Dropdown.Item>
+                                        <Dropdown.Item href="#">Another action</Dropdown.Item>
+                                        <Dropdown.Item href="#">Something else here</Dropdown.Item>
+                                        <Dropdown.Divider />
+                                        <Dropdown.Item href="#">Separated link</Dropdown.Item>
+                                    </DropdownButton></div>
+                            </div>
                         </div>
-                        <div className="selectWrapper">
-                            <Dropdown>
-                                <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                                    <span className="spanChain">{toAsset}</span>
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu>
-                                    <Dropdown.Item href="#">RINKEBY</Dropdown.Item>
-                                    <Dropdown.Item href="#">BSCTESTNET</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </div> */}
                     </div>
                 </div>
-                <div>
-                    {/* <button className="createButton" onClick={onCreateOrder}>Create Order</button> */}
-                    <Button display={"Create Order"} spinner={creatingOrder} onclick={onCreateOrder}></Button>
-                </div>
-            </div>
-            <div>
-                {/* <Table striped bordered hover variant="">
-                    <thead className="tableHeader">
-                        <tr>
-                            <th>Id</th>
-                            <th>Coin</th>
-                            <th>From Chain</th>
-                            <th>Amount</th>
-                            <th>To Chain</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody className="tableBody">
-                        {orders.map((order: Order) => {
-                            return (
-                                <tr key={order.orderId.toString() + order.fromChainId}>
-                                    <td>{order.orderId.toString()}</td>
-                                    <td>{getTokenName(order.tokenContract, order.fromChainId)}</td>
-                                    <td>{order.fromChainId}</td>
-                                    <td>{formatNumber(ethers.utils.formatEther(order.amount.toString()), 3)}</td>
-                                    <td>{order.toChainId}</td>
-                                    <td>{formatNumber(ethers.utils.formatEther(order.toAmount.toString()), 3)} {getTokenName(order.toTokenContract, order.toChainId)}</td>
-                                    <td>{order.filled ? "Filled" : "Open"}</td>
-                                    {order.filled ? <td></td> : <td className="buyButtonWrapper" > <button className="buyButton" onClick={() => onBuyOrder(order)}>Buy</button></td>}
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </Table> */}
+
+                <Button display={"Create Order"} spinner={creatingOrder} onclick={onCreateOrder}></Button>
+
+
+
+
+
             </div>
         </Container>
     )

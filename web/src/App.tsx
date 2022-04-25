@@ -4,6 +4,7 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import Web3Context, { Web3Provider } from './context/Web3Context';
 import Swap from './pages/swap/Index'
 import PageHead from "./components/PageHead/PageHead"
+import Footer from "./components/Footer/Footer"
 import Faucet from "./pages/faucet/faucet"
 import { Provider } from 'react-redux';
 import store from "./redux/store"
@@ -23,6 +24,7 @@ function App() {
           <PageHead></PageHead>
           <Route path="/" exact component={() => <Swap />} />
           <Route path="/faucet" exact component={() => <Faucet />} />
+          <Footer></Footer>
         </BrowserRouter>
       </Web3Provider>
       </Provider>

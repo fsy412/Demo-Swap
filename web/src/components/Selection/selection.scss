@@ -1,0 +1,111 @@
+// .selectionWrapper {
+//     padding: 5px 10px;
+//     background-color: rgb(33, 38, 62);
+//     border-radius: 1.25rem;
+//     margin-top: 30px;
+
+//     .title {
+//         color: #c3c5cb;
+//         font-size: 23px;
+//         margin: 10px 25px;
+//         border-style: solid;
+//         border-width: 1px;
+//         border-top: none;
+//         border-right: none;
+//         border-left: none;
+//         // border-bottom: none;
+//         border-width: 0.1px;
+//         padding: 10px 0px;
+//         border-color: gray;
+//     }
+
+//     .fromGroup {
+//         padding: 10px 30px;
+
+//         display: flex;
+//         align-items: center;
+//         flex-direction: row;
+//         height: 40px;
+
+//         .textFrom {
+//             color: wheat;
+//         }
+
+//         .dropdownWrapper {
+//             width: 50px;
+
+//             // height: 30px;
+//             .dropdown {
+//                 #input-group-dropdown-1 {
+//                     border: none;
+
+//                     span {
+//                         img {
+//                             width: 20%;
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+
+//     .SelectionBox {
+//         display: flex;
+//         flex-direction: column;
+//         align-items: center;
+//         justify-content: space-between;
+
+//         padding: 20px 0px;
+//         margin: 0 20px;
+
+//         border-radius: 20px;
+
+//         background-color: rgba(21, 21, 21, 0.506);
+
+//         .balanceInfo {
+//             display: flex;
+//             justify-content: space-between;
+//             align-items: center;
+//             width: 90%;
+
+//             span {
+//                 color: white;
+//             }
+//         }
+
+//         .selectionWrapper {
+//             padding: 0 20px;
+//             width: 100%;
+//             display: flex;
+//             justify-content: space-between;
+//             align-items: center;
+//             margin-top: -0px;
+//             background-color: transparent;
+
+//             .inputWrapper {
+//                 margin-left: 20px;
+
+//                 input {
+//                     background-color: transparent;
+//                     outline: none;
+//                     border: none;
+//                     color: white;
+//                     font-size: 35px;
+//                 }
+//             }
+
+//             .menuWrapper {
+//                 margin-left: -100px;
+
+//                 .menu {
+//                     .dropdown {
+//                         button {
+//                             border: none;
+//                         }
+//                     }
+//                 }
+
+//             }
+//         }
+//     }
+// }

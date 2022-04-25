@@ -2,8 +2,9 @@ body {
     background-color: rgb(21, 26, 47);
 }
 
-.container {
-    width: 55%;
+.swap {
+    margin-top: 60px;
+    width: 40%;
 
     .selectionWrapper {
         padding: 5px 10px;
@@ -20,196 +21,109 @@ body {
             border-top: none;
             border-right: none;
             border-left: none;
+            // border-bottom: none;
+            border-width: 0.1px;
             padding: 10px 0px;
             border-color: gray;
+        }
+
+        .fromGroup {
+            padding: 10px 30px;
+
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            height: 40px;
+
+            .textFrom {
+                color: wheat;
+            }
+
+            .dropdownWrapper {
+                width: 50px;
+
+                // height: 30px;
+                .dropdown {
+                    #input-group-dropdown-1 {
+                        border: none;
+
+                        span {
+                            img {
+                                width: 20%;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         .SelectionBox {
             display: flex;
             flex-direction: column;
-            color: #c3c5cb;
-            padding: 10px 30px;
-            // margin-top: 10px;
+            align-items: center;
+            justify-content: space-between;
 
-            .textBalance {
-                margin-right: 20px;
-            }
+            padding: 20px 0px;
+            margin: 0 20px;
 
-            .textBox {
+            border-radius: 20px;
+
+            background-color: rgba(21, 21, 21, 0.506);
+
+            .balanceInfo {
                 display: flex;
                 justify-content: space-between;
-            }
-
-            .inputBox {
-                display: flex;
                 align-items: center;
+                width: 90%;
+
+                span {
+                    color: white;
+                }
+            }
+
+            .selectionWrapper {
+                padding: 0 20px;
+                width: 100%;
+                display: flex;
                 justify-content: space-between;
-                justify-items: center;
-                padding: 10px 0px;
+                align-items: center;
+                margin-top: -0px;
+                background-color: transparent;
 
-                .input-group {
-                    height: 50px;
-                    #input-group-dropdown-1{
-                        width: 25%;
-                        span {
-
-                            img{
-                                width: 35%;
-                            }
-                        }
-                    }
-                    
-                    #input-group-dropdown-2 {
-                       padding: 0 10px;
-                        width: 25%;
-
-                        span {
-                            img{
-                                width: 30%;
-                            }
-                        }
-
-                        .dropdown-toggle::after {
-                            display: inline-block;
-                            margin-left: 0.255em;
-                            margin-right: 00.255em;
-                            vertical-align: 0.255em;
-                            content: "";
-                            border-top: 0.3em solid;
-                            border-right: 0.3em solid transparent;
-                            border-bottom: 0;
-                            border-left: 0.3em solid transparent;
-                        }
-
-                    }
-
-
+                .inputWrapper {
+                    margin-left: 20px;
 
                     input {
-                        background-color: #8a95b8 // background: linear-gradient(to right, rgb(115, 76, 226), rgb(96, 107, 251));
+                        background-color: transparent;
+                        outline: none;
+                        border: none;
+                        color: white;
+                        font-size: 35px;
                     }
+                }
 
-                    .dropdown-item {
-                        display: flex;
-                        flex-direction: row;
-                        align-items: center;
-                        img {
-                            width: 40px;
+                .menuWrapper {
+                    margin-left: -100px;
+                    .menu {
+                        .dropdown {
+                            button {
+                                border: none;
+                            }
                         }
                     }
 
-                    
                 }
-            }
-
-
-
-
-            .tokenSelect {
-                flex: 2;
-                display: flex;
-                justify-content: center;
-                margin: 0 auto;
-
-                .dropdownWrapper {
-                    .dropdownEle {
-                        background-color: azure;
-                    }
-
-                    .spanChain {
-                        display: inline-block;
-                        width: 90px;
-                    }
-                }
-
-                .dropdownMenu {
-                    .chanIcon {
-                        max-width: 100%;
-                        max-height: 100%;
-                        background-color: white;
-                        border-radius: 24px;
-                        margin: 0 10px;
-                    }
-                }
-            }
-
-            .inputWrapper {
-                flex: 5;
-                display: flex;
-                justify-content: center;
-
-                input::-webkit-outer-spin-button,
-                input::-webkit-inner-spin-button {
-                    -webkit-appearance: none !important;
-                    margin: 0;
-                }
-
-                margin: 0 auto;
-                width: 100%;
-
-                .inputControl {
-
-                    /* margin :auto; */
-                    background: transparent;
-                    // border-top: none;
-                    // border-right: none;
-                    // border-left: none;
-                    // outline: none;
-                    font-size: 35px;
-                    color: rgb(255, 255, 255);
-                }
-            }
-
-            .selectWrapper {
-                .spanChain {
-                    display: inline-block;
-                    width: 180px;
-                }
-
-                flex:3;
-                display: flex;
-                justify-content: center;
             }
         }
 
-        .iconWrapper {
+        .direction {
+            margin-top: 20px;
             display: flex;
-            text-align: center;
             justify-content: center;
-            padding: 10px 0px;
-            position: relative;
-            border: solid 1px;
-            margin: 10px 25px;
-            border-top: none;
-            border-right: none;
-            border-left: none;
-            border-color: gray;
-
-            .iconArrow {
-                left: 50%;
-                margin-top: -10px;
-                margin-left: -20px;
-                position: absolute;
-                cursor: pointer;
-                border-radius: 50%;
-                background: linear-gradient(to right, rgb(115, 76, 226), rgb(96, 107, 251));
-                width: 40px;
-                height: 40px;
-                justify-content: center;
-                align-items: center;
-                display: flex;
-                background-color: gray;
-            }
-
-            .font {
-                color: white;
-                font-size: 20px;
-                font-weight: 90;
-            }
         }
 
         .createButton {
-            padding: 1rem 0;
+            // padding: 1rem 20px;
             width: 100%;
             height: 45px;
             max-width: 180px;
@@ -226,7 +140,6 @@ body {
             margin: 2rem auto;
             color: rgb(255, 255, 255)
         }
-
     }
 
     .tableHeader {
@@ -244,25 +157,13 @@ body {
         font-size: 12px;
 
         .buyButtonWrapper {
-            /* padding: 0 40px; */
             display: flex;
             justify-content: center;
             width: 100%;
 
             .buyButton {
-                /* padding: 0 40px; */
                 width: 80%;
             }
         }
     }
-}
-
-.dropdown-toggle::after {
-    // display: inline-block;
-    // /* vertical-align: 0.255em; */
-    // content: "";
-    // border-top: 0.3em solid;
-    // border-right: 0.3em solid transparent;
-    // border-bottom: 0;
-    // border-left: 0.3em solid transparent;
 }
