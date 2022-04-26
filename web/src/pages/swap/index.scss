@@ -4,7 +4,7 @@ body {
 
 .swap {
     margin-top: 60px;
-    width: 40%;
+    width: 600px;
 
     .selectionWrapper {
         padding: 5px 10px;
@@ -27,100 +27,13 @@ body {
             border-color: gray;
         }
 
-        .fromGroup {
-            padding: 10px 30px;
-
-            display: flex;
-            align-items: center;
-            flex-direction: row;
-            height: 40px;
-
-            .textFrom {
-                color: wheat;
-            }
-
-            .dropdownWrapper {
-                width: 50px;
-
-                // height: 30px;
-                .dropdown {
-                    #input-group-dropdown-1 {
-                        border: none;
-
-                        span {
-                            img {
-                                width: 20%;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        .SelectionBox {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 20px 0px;
-            margin: 0 20px;
-
-            border-radius: 20px;
-
-            background-color: rgba(21, 21, 21, 0.506);
-
-            .balanceInfo {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 90%;
-
-                span {
-                    color: white;
-                }
-            }
-
-            .selectionWrapper {
-                padding: 0 20px;
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: -0px;
-                background-color: transparent;
-
-                .inputWrapper {
-                    margin-left: 20px;
-
-                    input {
-                        background-color: transparent;
-                        outline: none;
-                        border: none;
-                        color: white;
-                        font-size: 35px;
-                    }
-                }
-
-                .menuWrapper {
-                    margin-left: -100px;
-                    .menu {
-                        .dropdown {
-                            button {
-                                border: none;
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
-
         .direction {
             margin-top: 20px;
             display: flex;
             justify-content: center;
+            cursor: pointer;
         }
+
 
         .createButton {
             // padding: 1rem 20px;

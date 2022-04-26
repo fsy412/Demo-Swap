@@ -6,29 +6,43 @@ import { ethers } from 'ethers'
 import { CONFIG } from '../../config/chain'
 import { Order } from "../../models/models"
 import { Button } from "../../components/Button/Button"
-// import { Selection } from "../../components/Selection/Selection"
-import { formatNumber } from "../../util/format"
+import Selection from "../../components/Selection/Selection"
+import { formatNumber } from "../../util/util"
 import { useDispatch, useSelector } from 'react-redux';
 import { walletActions } from "../../redux/actions"
 import { walletSelectors } from "../../redux/selectors";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCoffee, faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Swap = () => {
     const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress, getBalance } = useContext(Web3Context);
-    const [fromChainId, setFormChainId] = useState('Select Chain');
-    const [fromAsset, setFormAsset] = useState('Select Token');
+    const [fromChainId, setFormChainId] = useState('BSCTEST');
+    const [fromAsset, setFormAsset] = useState('USDC');
     const [fromBalance, setFromBalance] = useState('0');
 
-    const [toChainId, setToChainId] = useState('Select Chain');
-    const [toAsset, setToAsset] = useState('Select Token');
+    const [toChainId, setToChainId] = useState('RINKEBY');
+    const [toAsset, setToAsset] = useState('USDC');
     const [toBalance, setToBalance] = useState('0');
 
     const [orders, setOrders] = useState<Order[]>([]);
     const refFromAmount = useRef<HTMLInputElement>(null);
     const refToAmount = useRef<HTMLInputElement>(null);
-    const [creatingOrder, setCreatingOrder] = useState(Boolean);
+    const [creatingOrder, setCreatingOrder] = useState<boolean>(false);
+    const [disableCreate, setDisableCreate] = useState<boolean>(true);
+
+    const [fromAmount, setFromAmount] = useState('');
+    const [toAmount, setToAmount] = useState('');
+    const [createBtnTxt, setCreateBtnTxt] = useState('Create Order');
+
+    const notify = (msg) => toast.success(msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
 
     const dispatch = useDispatch();
     useEffect(() => {
@@ -54,11 +68,14 @@ const Swap = () => {
     const onFromTokenSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let token = (e.target as HTMLInputElement).textContent;
+        console.log("onFromTokenSelect", token)
         setFormAsset(token)
     }
     const onFromChainSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
+
+        console.log("chain", chain)
         if (fromAsset != 'Select Token') {
             getBalance(fromAsset, chain).then((balance => {
                 setFromBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
@@ -81,17 +98,26 @@ const Swap = () => {
         }
         setToChainId(chain)
     }
-    const onFromInputChange = (e) => {
-        const value = e.target.value.replace(/[^\d]/, "");
-        console.log(value)
-        if (+value !== 0) {
-
-        }
+    const onFromInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+        const val = e.currentTarget.value;
+        const re = /^[0-9\b]+$/;
+        console.log(val, e.currentTarget.validity.valid)
+        setDisableCreate(false)
+        setFromAmount(val)
+        setToAmount(val)
     }
 
-    const onToInputChange = (e) => { }
+    const onToInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+        const val = e.currentTarget.value;
+        const re = /^[0-9\b]+$/;
+        console.log(val, e.currentTarget.validity.valid)
+        setDisableCreate(false)
+        setFromAmount(val)
+        setToAmount(val)
+    }
 
     const getFromAssetAddress = () => {
+        console.log('fromAsset', fromAsset, 'chain', chainName)
         let list = CONFIG.TokenList.filter(k => (k.Name === chainName))[0].List
         let tokenAddress = list.filter(k => (k.name == fromAsset))[0].address;
         // console.log(`token:${formAsset} address:${tokenAddress}, chain:${chainName}`)
@@ -105,27 +131,32 @@ const Swap = () => {
     }
 
     const onCreateOrder = async () => {
-        setCreatingOrder(true)
-        console.log('onCreateOrder')
-        console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', refFromAmount.current?.value)
-        console.log('to asset:', getToAssetAddress(), ' chain:', toChainId, 'amount:', refToAmount.current?.value)
-        console.log('swap address:', getSwapAddress(chainName))
+        try {
+            setCreatingOrder(true)
+            console.log('onCreateOrder')
+            console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', fromAmount)
+            console.log('to asset:', getToAssetAddress(), ' chain:', toChainId, 'amount:', toAmount)
+            console.log('swap address:', getSwapAddress(chainName))
 
-        // approve swap 
-        let amount = ethers.utils.parseEther(refFromAmount.current?.value)
-        await approveSwap(getFromAssetAddress(), getSwapAddress(chainName), amount)
-        console.log('approve done')
-        // create order
-        let chain_from = fromChainId
-        let asset_from = getFromAssetAddress()
-        let amount_from = amount
-        let chain_to = toChainId
-        let asset_to = getToAssetAddress()
-        let amount_to = ethers.utils.parseEther(refToAmount.current?.value)
-
-        console.log('createOrder start')
-        await createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to)
-        setCreatingOrder(false)
+            // approve swap 
+            setCreateBtnTxt("Approving")
+            let amount = ethers.utils.parseEther(fromAmount.toString())
+            await approveSwap(getFromAssetAddress(), getSwapAddress(chainName), amount)
+            // create order
+            let chain_from = fromChainId
+            let asset_from = getFromAssetAddress()
+            let amount_from = amount
+            let chain_to = toChainId
+            let asset_to = getToAssetAddress()
+            let amount_to = ethers.utils.parseEther(toAmount)
+            setCreateBtnTxt("Creating Order")
+            await createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to)
+            setCreatingOrder(false)
+            notify('Order Created')
+        } catch (error) {
+            setCreateBtnTxt("Create Order")
+            setCreatingOrder(false)
+        }
         return
     }
 
@@ -147,152 +178,24 @@ const Swap = () => {
         }
         return name
     }
-
+    const onChangeDir = () => {
+        let toChainId_ = toChainId
+        setToChainId(fromChainId)
+        setFormChainId(toChainId_)
+    }
     return (
         <Container className="container-fluid swap">
+            <ToastContainer />
             <div className="selectionWrapper">
                 <div className="title">
                     <span className="text">
                         Bridge Assets
                     </span>
                 </div>
-
-
-                <div className="selectionGroup">
-                    <div className="fromGroup">
-                        <div className="textFrom">
-                            <span>From</span>
-                        </div>
-                        <div className="dropdownWrapper">
-                            <DropdownButton
-                                variant="outline-secondary"
-                                title={
-                                    <span>
-                                        <img src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg" /> BSCTEST
-                                    </span>
-                                }
-                                id="input-group-dropdown-1"
-                            >
-
-                                <Dropdown.Item href="#">
-                                    <div ><img src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg" /></div>
-                                    <div>BSCTEST</div>
-                                </Dropdown.Item>
-                                <Dropdown.Item href="#">
-                                    <div ><img src="https://anyswap.exchange/static/media/ETH.cec4ef9a.svg" /></div>
-                                    <div>RINKEBY</div>
-                                </Dropdown.Item>
-                            </DropdownButton>
-                        </div>
-                    </div>
-
-                    <div className="SelectionBox" >
-                        <div className="balanceInfo">
-                            <div>
-                                <span>
-                                    Send
-                                </span>
-                            </div>
-                            <div>
-                                <span>
-                                    max
-                                </span>
-                            </div>
-                        </div>
-                        <div className="selectionWrapper">
-                            <div>
-                                <div className="inputWrapper"><input /></div>
-                            </div>
-                            <div className="menuWrapper">
-                                <div className="menu">
-                                    <DropdownButton
-                                        variant="outline-secondary"
-                                        title="Dropdown"
-                                        id="input-group-dropdown-2"
-                                        align="end"
-                                    >
-                                        <Dropdown.Item href="#">Action</Dropdown.Item>
-                                        <Dropdown.Item href="#">Another action</Dropdown.Item>
-                                        <Dropdown.Item href="#">Something else here</Dropdown.Item>
-                                        <Dropdown.Divider />
-                                        <Dropdown.Item href="#">Separated link</Dropdown.Item>
-                                    </DropdownButton></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="direction"><img src="https://cbridge.celer.network/static/media/arrowupdown.963b18ea.svg" /></div>
-
-                <div className="selectionGroup">
-                    <div className="fromGroup">
-                        <div className="textFrom">
-                            <span>To</span>
-                        </div>
-                        <div className="dropdownWrapper">
-                            <DropdownButton
-                                variant="outline-secondary"
-                                title={
-                                    <span>
-                                        <img src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg" /> BSCTEST
-                                    </span>
-                                }
-                                id="input-group-dropdown-1"
-                            >
-
-                                <Dropdown.Item href="#">
-                                    <div ><img src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg" /></div>
-                                    <div>BSCTEST</div>
-                                </Dropdown.Item>
-                                <Dropdown.Item href="#">
-                                    <div ><img src="https://anyswap.exchange/static/media/ETH.cec4ef9a.svg" /></div>
-                                    <div>RINKEBY</div>
-                                </Dropdown.Item>
-                            </DropdownButton>
-                        </div>
-                    </div>
-
-                    <div className="SelectionBox" >
-                        <div className="balanceInfo">
-                            <div>
-                                <span>
-                                    Send
-                                </span>
-                            </div>
-                            <div>
-                                <span>
-                                    max
-                                </span>
-                            </div>
-                        </div>
-                        <div className="selectionWrapper">
-                            <div>
-                                <div className="inputWrapper"><input /></div>
-                            </div>
-                            <div className="menuWrapper">
-                                <div className="menu">
-                                    <DropdownButton
-                                        variant="outline-secondary"
-                                        title="Dropdown"
-                                        id="input-group-dropdown-2"
-                                        align="end"
-                                    >
-                                        <Dropdown.Item href="#">Action</Dropdown.Item>
-                                        <Dropdown.Item href="#">Another action</Dropdown.Item>
-                                        <Dropdown.Item href="#">Something else here</Dropdown.Item>
-                                        <Dropdown.Divider />
-                                        <Dropdown.Item href="#">Separated link</Dropdown.Item>
-                                    </DropdownButton></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <Button display={"Create Order"} spinner={creatingOrder} onclick={onCreateOrder}></Button>
-
-
-
-
-
+                <Selection dir={"from"} onSelectChain={onFromChainSelect} onTokenSelect={onFromTokenSelect} chain={fromChainId} setInput={onFromInputChange} amount={fromAmount} />
+                <div className="direction"><img src="https://cbridge.celer.network/static/media/arrowupdown.963b18ea.svg" onClick={onChangeDir} /></div>
+                <Selection dir={"to"} onSelectChain={onToChainSelect} onTokenSelect={onToTokenSelect} chain={toChainId} setInput={onToInputChange} amount={toAmount} />
+                <Button display={createBtnTxt} spinner={creatingOrder} onclick={onCreateOrder} disable={disableCreate}></Button>
             </div>
         </Container>
     )

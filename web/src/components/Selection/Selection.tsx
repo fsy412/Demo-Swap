@@ -1,75 +1,94 @@
-import React from 'react'
+import React, { SyntheticEvent } from 'react'
 import { Dropdown, DropdownButton } from "react-bootstrap"
 import "./selection.scss"
 
-const Selection = () => {
+const Selection = ({
+    dir,
+    onSelectChain,
+    onTokenSelect,
+    chain,
+    setInput,
+    amount
+}: {
+    dir: string;
+    onSelectChain: (eventKey: any, e: SyntheticEvent<EventTarget, Event>) => void;
+    onTokenSelect: (eventKey: any, e: SyntheticEvent<EventTarget, Event>) => void;
+    chain: string;
+    setInput: (e: React.FormEvent<HTMLInputElement>) => void;
+    amount: string
+}) => {
+    const getChainImg = (chain: string) => {
+        if (chain == "BSCTEST") {
+            return "https://anyswap.exchange/static/media/BNB.c6c25fc0.svg"
+        } else if (chain == "RINKEBY") {
+            return "https://anyswap.exchange/static/media/ETH.cec4ef9a.svg"
+        }
+    }
     return (
-        <>
-             <div className="selectionGroup">
-                <div className="fromGroup">
-                    <div className="textFrom">
-                        <span>From</span>
+        <div className="selectionGroup">
+            <div className="fromGroup">
+                <div className="textFrom">
+                    <span>{dir}</span>
+                </div>
+                <div className="dropdownWrapper">
+                    <DropdownButton
+                        variant="outline-secondary"
+                        title={
+                            <span>
+                                <img src={getChainImg(chain)} /> {chain}
+                            </span>
+                        }
+                        id="input-group-dropdown-1"
+                        onSelect={onSelectChain}
+                    >
+
+                        <Dropdown.Item href="#">
+                            <span ><img className="imgWrapper" src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg" />BSCTEST</span>
+                        </Dropdown.Item>
+                        <Dropdown.Item href="#">
+                            <span ><img src="https://anyswap.exchange/static/media/ETH.cec4ef9a.svg" />RINKEBY</span>
+                        </Dropdown.Item>
+                    </DropdownButton>
+                </div>
+            </div>
+
+            <div className="selectionBox" >
+                <div className="balanceInfo">
+                    <div>
+                        <span>
+                            {dir == "from" ? "Send" : "Receive"}
+                        </span>
                     </div>
-                    <div className="dropdownWrapper">
+                    <div>
+                        <span>
+                            max
+                        </span>
+                    </div>
+                </div>
+                <div className="selectionWrapper">
+                    <div className="inputWrapper"><input pattern="[0-9]*" type="number" onChange={setInput} value={amount} placeholder={"0.0"} onWheel={event => event.currentTarget.blur()} /></div>
+                    <div className="menuWrapper">
                         <DropdownButton
                             variant="outline-secondary"
                             title={
                                 <span>
-                                    <img src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg" /> BSCTEST
+                                    <img src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png" /> USDC
                                 </span>
                             }
-                            id="input-group-dropdown-1"
+                            id="input-group-dropdown-2"
+                            // align="end"
+                            onSelect={onTokenSelect}
+                            className="shadow-none"
                         >
-
                             <Dropdown.Item href="#">
-                                <div ><img src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg" /></div>
-                                <div>BSCTEST</div>
-                            </Dropdown.Item>
-                            <Dropdown.Item href="#">
-                                <div ><img src="https://anyswap.exchange/static/media/ETH.cec4ef9a.svg" /></div>
-                                <div>RINKEBY</div>
+                                <span ><img src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png" />USDC</span>
                             </Dropdown.Item>
                         </DropdownButton>
                     </div>
-                </div>
 
-                <div className="SelectionBox" >
-                    <div className="balanceInfo">
-                        <div>
-                            <span>
-                                Send
-                            </span>
-                        </div>
-                        <div>
-                            <span>
-                                max
-                            </span>
-                        </div>
-                    </div>
-                    <div className="selectionWrapper">
-                        <div>
-                            <div className="inputWrapper"><input /></div>
-                        </div>
-                        <div className="menuWrapper">
-                            <div className="menu">
-                                <DropdownButton
-                                    variant="outline-secondary"
-                                    title="Dropdown"
-                                    id="input-group-dropdown-2"
-                                    align="end"
-                                >
-                                    <Dropdown.Item href="#">Action</Dropdown.Item>
-                                    <Dropdown.Item href="#">Another action</Dropdown.Item>
-                                    <Dropdown.Item href="#">Something else here</Dropdown.Item>
-                                    <Dropdown.Divider />
-                                    <Dropdown.Item href="#">Separated link</Dropdown.Item>
-                                </DropdownButton></div>
-                        </div>
-                    </div>
                 </div>
-            </div >  
-        </>
+            </div>
+        </div>
     )
 }
-
 export default Selection

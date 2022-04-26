@@ -32,8 +32,22 @@ function formatNumber(num: string | number, decimal: number = 0): string {
     return str
 }
 
+const getChainImg = (chain: string) => {
+    if (chain == "BSCTEST") {
+        return "https://anyswap.exchange/static/media/BNB.c6c25fc0.svg"
+    } else if (chain == "RINKEBY") {
+        return "https://anyswap.exchange/static/media/ETH.cec4ef9a.svg"
+    }
+}
+
+const shortAddress = (val: string) => {
+    return  val.substring(0, 6) + '...' + val.substring(val.length - 4, val.length) 
+}
+
 export {
-    formatNumber
+    formatNumber,
+    getChainImg,
+    shortAddress
 }
 
 

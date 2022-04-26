@@ -20,11 +20,11 @@ const PageHead = () => {
                     <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link>
                 </Nav>
                 <Nav>
-                    <Nav.Link as={Link} className="faucet" to="/Bridge" >Bridge</Nav.Link>
+                    <Nav.Link as={Link} className="faucet" to="/" >Bridge</Nav.Link>
                 </Nav>
-                <Nav>
+                {/* <Nav>
                     <Nav.Link as={Link} className="faucet" to="/Bridge" >Wallet</Nav.Link>
-                </Nav>
+                </Nav> */}
                 <Nav>
                     <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
                 </Nav>

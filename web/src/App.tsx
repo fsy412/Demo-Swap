@@ -11,6 +11,7 @@ import store from "./redux/store"
 import   "./App.css"
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
+import Trade from './pages/trade/trade';
 
 library.add(fas)
 
@@ -23,6 +24,7 @@ function App() {
         <BrowserRouter>
           <PageHead></PageHead>
           <Route path="/" exact component={() => <Swap />} />
+          <Route path="/trade" exact component={() => <Trade />} />
           <Route path="/faucet" exact component={() => <Faucet />} />
           <Footer></Footer>
         </BrowserRouter>

@@ -1,111 +1,142 @@
-// .selectionWrapper {
-//     padding: 5px 10px;
-//     background-color: rgb(33, 38, 62);
-//     border-radius: 1.25rem;
-//     margin-top: 30px;
+.selectionGroup {
+    background-color: rgb(33, 38, 62);
+    border-radius: 1.25rem;
 
-//     .title {
-//         color: #c3c5cb;
-//         font-size: 23px;
-//         margin: 10px 25px;
-//         border-style: solid;
-//         border-width: 1px;
-//         border-top: none;
-//         border-right: none;
-//         border-left: none;
-//         // border-bottom: none;
-//         border-width: 0.1px;
-//         padding: 10px 0px;
-//         border-color: gray;
-//     }
+    .title {
+        color: #c3c5cb;
+        font-size: 23px;
+        margin: 10px 25px;
+        border-style: solid;
+        border-width: 1px;
+        border-top: none;
+        border-right: none;
+        border-left: none;
+        // border-bottom: none;
+        border-width: 0.1px;
+        padding: 10px 0px;
+        border-color: gray;
+    }
 
-//     .fromGroup {
-//         padding: 10px 30px;
+    .fromGroup {
+        padding: 10px 30px;
 
-//         display: flex;
-//         align-items: center;
-//         flex-direction: row;
-//         height: 40px;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        height: 40px;
 
-//         .textFrom {
-//             color: wheat;
-//         }
+        .textFrom {
+            color: white;
+        }
 
-//         .dropdownWrapper {
-//             width: 50px;
+        .dropdownWrapper {
+            width: 50px;
 
-//             // height: 30px;
-//             .dropdown {
-//                 #input-group-dropdown-1 {
-//                     border: none;
+            .dropdown {
+                width: 150px;
 
-//                     span {
-//                         img {
-//                             width: 20%;
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
+                #input-group-dropdown-1 {
+                    border: none;
+                }
 
-//     .SelectionBox {
-//         display: flex;
-//         flex-direction: column;
-//         align-items: center;
-//         justify-content: space-between;
+                span {
+                    img {
+                        width: 20%;
+                    }
+                }
 
-//         padding: 20px 0px;
-//         margin: 0 20px;
+                .dropdown-menu {
+                    border: none;
+                    width: 150px;
+                }
+            }
+        }
+    }
 
-//         border-radius: 20px;
+    .selectionBox {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        // justify-content: space-between;
 
-//         background-color: rgba(21, 21, 21, 0.506);
+        padding: 20px 0px;
+        margin: 0 20px;
 
-//         .balanceInfo {
-//             display: flex;
-//             justify-content: space-between;
-//             align-items: center;
-//             width: 90%;
+        border-radius: 20px;
 
-//             span {
-//                 color: white;
-//             }
-//         }
+        background-color: rgba(21, 21, 21, 0.506);
 
-//         .selectionWrapper {
-//             padding: 0 20px;
-//             width: 100%;
-//             display: flex;
-//             justify-content: space-between;
-//             align-items: center;
-//             margin-top: -0px;
-//             background-color: transparent;
+        .balanceInfo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
 
-//             .inputWrapper {
-//                 margin-left: 20px;
+            span {
+                color: white;
+            }
+        }
 
-//                 input {
-//                     background-color: transparent;
-//                     outline: none;
-//                     border: none;
-//                     color: white;
-//                     font-size: 35px;
-//                 }
-//             }
+        .selectionWrapper {
+            //  padding: 0 40px;
+            // padding-left: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: -0px;
+            background-color: transparent;
 
-//             .menuWrapper {
-//                 margin-left: -100px;
+            .inputWrapper {
+                margin-left: 40px;
+                width: 50%;
+                input {
+                    background-color: transparent;
+                    outline: none;
+                    border: none;
+                    color: white;
+                    font-size: 35px;
+                }
 
-//                 .menu {
-//                     .dropdown {
-//                         button {
-//                             border: none;
-//                         }
-//                     }
-//                 }
+                input::-webkit-outer-spin-button,
+                input::-webkit-inner-spin-button {
+                    -webkit-appearance: none !important;
+                    margin: 0;
+                }
+            }
 
-//             }
-//         }
-//     }
-// }
+            .menuWrapper {
+                width: 50%;
+                
+                .dropdown {
+                    margin-left: 60px;
+                    button {
+                        
+                        border: none;
+                    }
+                }
+
+                button {
+                    border: none;
+                    outline: none;
+                    box-shadow: none;
+
+                }
+
+                button:hover {
+                    // color: #fff !important;
+                    background: transparent;
+                    text-decoration: none;
+                }
+
+                span {
+                    img {
+                        width: 20%;
+                    }
+                }
+
+                // }
+
+            }
+        }
+    }
+}
