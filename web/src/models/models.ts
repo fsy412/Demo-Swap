@@ -8,8 +8,8 @@ export interface Order {
     hashlock: string;
     createTime: number;
     // timelock: number; // locked UNTIL this time.
-    cancelled: boolean;
     fromChainId: string;
     toChainId: string;
-    filled: boolean;
+    status: string;
+    payee: string;
 }

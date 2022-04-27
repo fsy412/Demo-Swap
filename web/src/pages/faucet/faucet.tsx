@@ -3,7 +3,6 @@ import { Container, Dropdown, InputGroup, FormControl} from 'react-bootstrap'
 import "./faucet.scss"
 import Web3Context, { Web3Provider } from "../../context/Web3Context"
 import { CONFIG } from '../../config/chain'
-import { Toast } from "../../components/Toast/Toast"
 
 export const Faucet = () => {
     const { account, chainName, faucet } = useContext(Web3Context);

@@ -1,3 +1,5 @@
+import { CONFIG } from '../config/chain'
+
 function formatNumber(num: string | number, decimal: number = 0): string {
     num = String(num)
     if (num === '' || num === '0') return num
@@ -44,10 +46,21 @@ const shortAddress = (val: string) => {
     return  val.substring(0, 6) + '...' + val.substring(val.length - 4, val.length) 
 }
 
+const getTokenName = (address: string, chain: string) => {
+    // console.log('address', address, 'chain', chain)
+    let list = CONFIG.TokenList.filter(k => (k.Name === chain))[0]?.List
+    let name
+    if (list) {
+        name = list.filter(k => (k.address === address))[0]?.name
+    }
+    return name
+}
+
 export {
     formatNumber,
     getChainImg,
-    shortAddress
+    shortAddress,
+    getTokenName
 }
 
 

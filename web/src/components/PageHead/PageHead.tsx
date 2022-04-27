@@ -11,30 +11,29 @@ const PageHead = () => {
     }
     return (
         <div className=" navbar" >
-        <Navbar bg="light" expand="md" >
-            <img className="logo" src="logo.png" alt="logo" />
-            <Navbar.Brand as={Link} className="headerText" to="/">Bridge</Navbar.Brand>
-            <Navbar.Collapse id="responsive-navbar-nav">
-                <Nav className="me-auto"></Nav>
-                <Nav>
-                    <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link>
-                </Nav>
-                <Nav>
-                    <Nav.Link as={Link} className="faucet" to="/" >Bridge</Nav.Link>
-                </Nav>
-                {/* <Nav>
+            <Navbar bg="light" expand="md" >
+                <img className="logo" src="logo.png" alt="logo" />
+                <Navbar.Brand as={Link} className="headerText" to="/">Bridge</Navbar.Brand>
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="me-auto"></Nav>
+                    <Nav>
+                        <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link>
+                    </Nav>
+                    <Nav>
+                        <Nav.Link as={Link} className="faucet" to="/" >Bridge</Nav.Link>
+                    </Nav>
+                    {/* <Nav>
                     <Nav.Link as={Link} className="faucet" to="/Bridge" >Wallet</Nav.Link>
-                </Nav> */}
-                <Nav>
-                    <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
-                </Nav>
-                <Nav className="me-auto"></Nav>
-
-                <Nav>
-                    <Nav.Link as={Link} className="wallet" to="" onClick={connectWallet}> {account ? short(account?.toString()) : "Connect To Wallet"}</Nav.Link>
-                </Nav>
-            </Navbar.Collapse>
-        </Navbar>
+                 </Nav> */}
+                    <Nav>
+                        <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
+                    </Nav>
+                    <Nav className="me-auto"></Nav>
+                    <Nav>
+                        <Nav.Link className="wallet" onClick={connectWallet}> {account ? short(account?.toString()) : "Connect To Wallet"}</Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
+            </Navbar>
 
         </div>
     )

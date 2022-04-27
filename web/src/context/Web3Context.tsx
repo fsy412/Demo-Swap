@@ -27,10 +27,11 @@ export const Web3Provider = (props: any) => {
     approveSwap: async (erc20, swap, amount) => { },
     getOrderList: (swapAddress) => { },
     createOrder: async (chainFrom, asset_from, amountFrom, chainTo, assetTo, amountTo) => { },
-    matchOrder: async (fromChainId, chainId, orderId, asset, amount, payee) => { },
+    matchOrder: async (fromChainId, chainId, orderId, asset, amount, payee, hashKey) => { },
     getSwapAddress: (chainId) => { },
     faucet: (tokenAddress) => { },
     getBalance: async (tokenName, chain) => { },
+    unlockAsset: async (fromChainId, chainId, orderId, hashKey, payee) => { },
   }
 
   useEffect(() => {
@@ -86,13 +87,13 @@ export const Web3Provider = (props: any) => {
       let provider = new ethers.providers.JsonRpcProvider(CONFIG.BSC.Rpc);
       const contract = new ethers.Contract(CONFIG.BSC.SwapAddress, Swap.abi, provider)
       orderList = await contract.query_all_orders()
-      // console.log('getOrderList bsc orders', orderList)
+      console.log('getOrderList bsc orders', orderList)
 
       {
         let provider = new ethers.providers.JsonRpcProvider(CONFIG.ETH.Rpc);
         const contract = new ethers.Contract(CONFIG.ETH.SwapAddress, Swap.abi, provider)
         let orders = await contract.query_all_orders()
-        // console.log('getOrderList eth orders', orders)
+         console.log('getOrderList eth orders', orders)
         orderList = orderList.concat(orders)
       }
     } catch (error) {
@@ -111,10 +112,18 @@ export const Web3Provider = (props: any) => {
     await transaction.wait()
   };
 
-  functionsToExport.matchOrder = async (fromChainId, chainId, orderId, asset, amount, payee) => {
+  functionsToExport.matchOrder = async (fromChainId, chainId, orderId, asset, amount, payee, hashKey) => {
     console.log("matchOrder", 'from chain:', fromChainId, 'current chain:', chainId, 'orderId', orderId, 'asset:', asset, 'amount:', amount.toString(), 'payee', payee)
     let swapContract = getContract(getChainSwapAddress(chainId), Swap.abi)
-    const transaction = await swapContract.match_order(fromChainId, orderId, asset, amount.toString(), payee)
+    const transaction = await swapContract.match_order(fromChainId, orderId, asset, amount.toString(), payee, hashKey)
+    await transaction.wait()
+  };
+
+  // function unlock_asset(string calldata chain_id, uint256 order_id, string calldata hashkey, address payee_address) public {
+  functionsToExport.unlockAsset = async (fromChainId, chainId, orderId, hashKey, payee) => {
+    let swapContract = getContract(getChainSwapAddress(chainId), Swap.abi)
+    console.log("unlockAsset", 'chainId:', chainId, 'swapContract', getChainSwapAddress(chainId), 'orderId:', orderId, 'hashKey', hashKey, 'payee:', payee)
+    const transaction = await swapContract.unlock_asset(fromChainId, orderId, hashKey, payee)
     await transaction.wait()
   };
 

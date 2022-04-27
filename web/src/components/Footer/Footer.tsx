@@ -1,6 +1,6 @@
 import React from "react"
 import "./footer.scss"
- 
+
 const Footer = () => {
     return (
         <div className="page-footer font-small blue pt-4">
@@ -35,8 +35,8 @@ const Footer = () => {
                 </div>
             </div>
 
-            <div className="footer-copyright text-center py-3">© 2022 Copyright 
-                <a href="https://mdbootstrap.com/">   DateNetwork.com</a>
+            <div className="footer-copyright text-center py-3">© Powered by
+                <a href="https://dantechain.com/">DateNetwork.com</a>
             </div>
 
         </div>

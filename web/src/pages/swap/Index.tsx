@@ -44,6 +44,16 @@ const Swap = () => {
         progress: undefined,
     });
 
+    const notifyError = (msg) => toast.error(msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
     const dispatch = useDispatch();
     useEffect(() => {
         setTimeout(() => {
@@ -131,17 +141,16 @@ const Swap = () => {
     }
 
     const onCreateOrder = async () => {
-        try {
-            setCreatingOrder(true)
-            console.log('onCreateOrder')
-            console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', fromAmount)
-            console.log('to asset:', getToAssetAddress(), ' chain:', toChainId, 'amount:', toAmount)
-            console.log('swap address:', getSwapAddress(chainName))
+        setCreatingOrder(true)
+        console.log('onCreateOrder')
+        console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', fromAmount)
+        console.log('to asset:', getToAssetAddress(), ' chain:', toChainId, 'amount:', toAmount)
+        console.log('swap address:', getSwapAddress(chainName))
 
-            // approve swap 
-            setCreateBtnTxt("Approving")
-            let amount = ethers.utils.parseEther(fromAmount.toString())
-            await approveSwap(getFromAssetAddress(), getSwapAddress(chainName), amount)
+        // approve swap 
+        setCreateBtnTxt("Approving")
+        let amount = ethers.utils.parseEther(fromAmount.toString())
+        approveSwap(getFromAssetAddress(), getSwapAddress(chainName), amount).then(() => {
             // create order
             let chain_from = fromChainId
             let asset_from = getFromAssetAddress()
@@ -150,14 +159,18 @@ const Swap = () => {
             let asset_to = getToAssetAddress()
             let amount_to = ethers.utils.parseEther(toAmount)
             setCreateBtnTxt("Creating Order")
-            await createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to)
-            setCreatingOrder(false)
-            notify('Order Created')
-        } catch (error) {
+            createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to).then(() => {
+                setCreatingOrder(false)
+                notify('Order Created')
+            }).catch(e => {
+                notifyError(e.message); setCreateBtnTxt("Create Order")
+                setCreatingOrder(false)
+            })
+        }).catch(e => {
+            notifyError(e.message);
             setCreateBtnTxt("Create Order")
             setCreatingOrder(false)
-        }
-        return
+        })
     }
 
     const onBuyOrder = async (order) => {
