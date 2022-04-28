@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import Web3Context, { Web3Provider } from "../../context/Web3Context"
 import { Navbar, Nav } from 'react-bootstrap'
 import { Link } from "react-router-dom";
-import "./PageHead.css"
+import "./PageHead.scss"
 
 const PageHead = () => {
     const { account, chainName, connectWallet } = useContext(Web3Context);
