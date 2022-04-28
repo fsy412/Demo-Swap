@@ -32,25 +32,16 @@ const Trade = () => {
     });
     useEffect(() => {
         const fetchOrders = async () => {
-            console.log("fetchOrders")
             let orderList = await getOrderList()
             setOrders(orderList)
-            setUnFilledOrders(orderList.filter((order) => { return order.status == "created" }))
-            setFilledOrders(orderList.filter((order) => { return order.status == "filled" }))
+            setUnFilledOrders(orderList.filter((order) => { return order.status == "Open" || order.status == "Locked" }))
+            setFilledOrders(orderList.filter((order) => { return order.status == "Filled" }))
             setMyOrders(orderList.filter((order) => { return order.sender == account }))
         }
         fetchOrders();
 
-        setTimeout(async () => {
-
-        }, 0);
-
         const timer = window.setInterval(async () => {
-            let orderList = await getOrderList()
-            setOrders(orderList)
-            setUnFilledOrders(orderList.filter((order) => { return order.status == "created" }))
-            setFilledOrders(orderList.filter((order) => { return order.status == "filled" }))
-            setMyOrders(orderList.filter((order) => { return order.sender == account }))
+            fetchOrders()
         }, 2000);
         return () => {
             clearInterval(timer);
@@ -65,9 +56,10 @@ const Trade = () => {
     }
 
     const onUnlock = async (hashKey: string) => {
-        console.log('onUnlock hashKey', hashKey, 'order', unlockOrder)
+        console.log('onUnlock  ', unlockOrder)
         setUnlockModalShow(false)
-        let hash = ethers.utils.sha256(ethers.utils.solidityPack(["string"], ["123"]))
+        let hash = ethers.utils.sha256(ethers.utils.solidityPack(["string"], [hashKey]))
+        console.log(unlockOrder.hashlock, hash)
         if (unlockOrder.hashlock != hash) {
             notifyError("Unlock failed hash doesn't match!")
             return
@@ -76,18 +68,25 @@ const Trade = () => {
     }
 
     const actionBtn = (order) => {
-        if (order.status == "created") {
+        if (order.status == "Open") {
             return (
-                <td className="text-center"> <button className='actionBtn' onClick={() => { setBuyOrder(order); setModalShow(true) }}>Buy</button></td>
+                <td className="text-center"> <button className='actionBtn' onClick={() => {
+                    // if (order.sender == account) {
+                    //     console.log('self trade')
+                    //     notifyError("Self trade!")
+                    //     return
+                    // }
+                    setBuyOrder(order); setModalShow(true)
+                }}>Buy</button></td>
             )
         }
-        if (order.status == "locked" && order.payee == account) {
+        if (order.status == "Locked" && order.payee == account) {
             return (
                 <td className="text-center" > <button className="actionBtn" onClick={() => { setUnlockOrder(order); setUnlockModalShow(true) }}>Unlock</button></td>
             )
         }
 
-        if (order.status == "filled") {
+        if (order.status == "Filled") {
             return (
                 <td className="text-center" ></td>
             )
@@ -172,7 +171,8 @@ const Trade = () => {
                                     <th className="text-center">Amount</th>
                                     <th className="text-center">From</th>
                                     <th className="text-center">To</th>
-                                    <th className="text-center">Status</th>
+                                    <th className="text-center">Receiver</th>
+                                    {/* <th className="text-center">Status</th> */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -184,7 +184,8 @@ const Trade = () => {
                                             <td className="text-center"><span>{formatNumber(ethers.utils.formatEther(order.toAmount.toString()), 3)} {getTokenName(order.toTokenContract, order.toChainId)}</span></td>
                                             <td className="text-center">{<span><img className='chainImg' src={getChainImg(order.fromChainId)}></img>{order.fromChainId}</span>}</td>
                                             <td className="text-center">{<span><img className='chainImg' src={getChainImg(order.toChainId)}></img>{order.toChainId}</span>}</td>
-                                            <td className="text-center">{order.status}</td>
+                                            {/* <td className="text-center">{order.status}</td> */}
+                                            <td className="text-center">{shortAddress(order.payee)}</td>
                                         </tr>
                                     )
                                 })}
@@ -194,6 +195,7 @@ const Trade = () => {
 
                 </Tab>
             </Tabs>
+            <ToastContainer />
             <HashModal showModal={modalShow} onHide={() => setModalShow(false)} onConfirm={(val) => onConfirmBuy(val)} />
             <UnlockModal showModal={unlockModalShow} onHide={() => setUnlockModalShow(false)} onConfirm={(val) => onUnlock(val)} />
         </div>

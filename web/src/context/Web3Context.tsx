@@ -10,7 +10,7 @@ const Web3Context = createContext(null);
 
 export const Web3Provider = (props: any) => {
   const [account, setAccount] = useState('');
-  const [signer, setSigner] = useState(null);
+  const [signer, setSigner] = useState<any>(null);
   const [blockchainId, setBlockchainId] = useState(0);
   const [chainName, setChainName] = useState('');
 
@@ -55,18 +55,52 @@ export const Web3Provider = (props: any) => {
         }
       }
     };
-    checkConnection();
+    // checkConnection();
   }, [blockchainId]);
 
+  useEffect((): (() => void) | undefined => {
+    const { ethereum } = window as any;
+
+    if (ethereum && ethereum.on) {
+      const handleConnect = (): void => {
+        console.log("Handling 'connect' event");
+      };
+
+      const handleChainChanged = (chainId: string | number): void => {
+        console.log("Handling 'chainChanged' event with payload", chainId);
+        (chainId == 0x61) ? setChainName("BSCTEST") : setChainName("RINKEBY")
+      };
+
+      const handleAccountsChanged = (accounts: string[]): void => {
+        signer.getAddress().then((account) => setAccount(account))
+      };
+
+      ethereum.on('connect', handleConnect);
+      ethereum.on('chainChanged', handleChainChanged);
+      ethereum.on('accountsChanged', handleAccountsChanged);
+
+      // cleanup function
+      return (): void => {
+        if (ethereum.removeListener) {
+          ethereum.removeListener('connect', handleConnect);
+          ethereum.removeListener('chainChanged', handleChainChanged);
+          ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        }
+      };
+    }
+  }, [blockchainId, account,signer]);
+
   functionsToExport.connectWallet = async () => {
+    console.log('connectWallet');
     try {
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
       const provider = new ethers.providers.Web3Provider(connection);
       const signer = provider.getSigner();
       const userAddress = await signer.getAddress();
-      const { chainId } = await provider.getNetwork()
-      setBlockchainId(chainId)
+      const { chainId } = await provider.getNetwork();
+      setBlockchainId(chainId);
+      (chainId === 97) ? setChainName("BSCTEST") : setChainName("RINKEBY")
       setAccount(userAddress);
       setSigner(signer);
     } catch (error) {
@@ -87,13 +121,13 @@ export const Web3Provider = (props: any) => {
       let provider = new ethers.providers.JsonRpcProvider(CONFIG.BSC.Rpc);
       const contract = new ethers.Contract(CONFIG.BSC.SwapAddress, Swap.abi, provider)
       orderList = await contract.query_all_orders()
-      console.log('getOrderList bsc orders', orderList)
+      // console.log('getOrderList bsc orders', orderList)
 
       {
         let provider = new ethers.providers.JsonRpcProvider(CONFIG.ETH.Rpc);
         const contract = new ethers.Contract(CONFIG.ETH.SwapAddress, Swap.abi, provider)
         let orders = await contract.query_all_orders()
-         console.log('getOrderList eth orders', orders)
+        // console.log('getOrderList eth orders', orders)
         orderList = orderList.concat(orders)
       }
     } catch (error) {

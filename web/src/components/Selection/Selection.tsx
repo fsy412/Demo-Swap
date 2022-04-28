@@ -8,14 +8,16 @@ const Selection = ({
     onTokenSelect,
     chain,
     setInput,
-    amount
+    amount,
+    onMaxClick
 }: {
     dir: string;
     onSelectChain: (eventKey: any, e: SyntheticEvent<EventTarget, Event>) => void;
     onTokenSelect: (eventKey: any, e: SyntheticEvent<EventTarget, Event>) => void;
     chain: string;
     setInput: (e: React.FormEvent<HTMLInputElement>) => void;
-    amount: string
+    amount: string;
+    onMaxClick: () => void;
 }) => {
     const getChainImg = (chain: string) => {
         if (chain == "BSCTEST") {
@@ -60,7 +62,7 @@ const Selection = ({
                         </span>
                     </div>
                     <div>
-                        <span>
+                        <span onClick={onMaxClick}>
                             max
                         </span>
                     </div>

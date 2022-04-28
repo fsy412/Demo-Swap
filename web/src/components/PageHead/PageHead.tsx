@@ -17,14 +17,11 @@ const PageHead = () => {
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto"></Nav>
                     <Nav>
-                        <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link>
+                        {account != "" ? <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link> : null}
                     </Nav>
                     <Nav>
                         <Nav.Link as={Link} className="faucet" to="/" >Bridge</Nav.Link>
                     </Nav>
-                    {/* <Nav>
-                    <Nav.Link as={Link} className="faucet" to="/Bridge" >Wallet</Nav.Link>
-                 </Nav> */}
                     <Nav>
                         <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
                     </Nav>

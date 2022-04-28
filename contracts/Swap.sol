@@ -82,7 +82,7 @@ contract Swap is ContractBase {
             block.timestamp,
             chain_from,
             chain_to,
-            "created",
+            "Open",
             address(0)
         );
         _orderIds.increment();
@@ -172,7 +172,7 @@ contract Swap is ContractBase {
         );
 
         Order storage order = idToOrder[order_id];
-        order.status = "locked";
+        order.status = "Locked";
         order.hashlock = hash;
         order.payee = payee_address;
     }
@@ -200,7 +200,7 @@ contract Swap is ContractBase {
         bytes32 hash = sha256(abi.encodePacked(hashkey));
         Order storage order = idToOrder[order_id];
         require(order.hashlock == hash);
-        order.status = "filled";
+        order.status = "Filled";
         // order.hashlockCheck = hash;
         bool ret = IERC20(order.tokenContract).transfer(
             payee_address,
@@ -231,7 +231,7 @@ contract Swap is ContractBase {
             OrderFill storage order = idToFillOrder[i];
             if (order.orderId == order_id){
                 bool ret = IERC20(order.tokenContract).transfer(order.payee, order.amount);
-                order.status = "done";
+                order.status = "Done";
                 order.transfer = ret;
             }
         }

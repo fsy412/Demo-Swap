@@ -84,13 +84,6 @@ const Swap = () => {
     const onFromChainSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
-
-        console.log("chain", chain)
-        if (fromAsset != 'Select Token') {
-            getBalance(fromAsset, chain).then((balance => {
-                setFromBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
-            })).catch(err => console.error(err))
-        }
         setFormChainId(chain)
     }
     const onToTokenSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
@@ -101,11 +94,6 @@ const Swap = () => {
     const onToChainSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
-        if (toAsset != 'Select Token') {
-            getBalance(fromAsset, chain).then((balance => {
-                setToBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
-            })).catch(err => console.error(err))
-        }
         setToChainId(chain)
     }
     const onFromInputChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -162,9 +150,11 @@ const Swap = () => {
             createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to).then(() => {
                 setCreatingOrder(false)
                 notify('Order Created')
+                setCreateBtnTxt("Create Order")
             }).catch(e => {
                 notifyError(e.message); setCreateBtnTxt("Create Order")
                 setCreatingOrder(false)
+                setCreateBtnTxt("Create Order")
             })
         }).catch(e => {
             notifyError(e.message);
@@ -172,30 +162,24 @@ const Swap = () => {
             setCreatingOrder(false)
         })
     }
-
-    const onBuyOrder = async (order) => {
-        console.log('onBuyOrder', order)
-        console.log('approveSwap', getSwapAddress(chainName), 'token', order.toTokenContract, 'orderId', order.orderId.toString(), 'amount', order.toAmount.toString())
-        console.log('matchOrder', 'fromChainId:', order.fromChainId, 'toChainId', order.toChainId, 'orderId', +order.orderId.toString(), 'token', order.toTokenContract, 'amount', order.toAmount.toString())
-
-        await approveSwap(order.toTokenContract, getSwapAddress(chainName), order.toAmount.toString())
-        await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.toTokenContract, order.toAmount, order.sender)
-    }
-
-    const getTokenName = (address: string, chain: string) => {
-        // console.log('address', address, 'chain', chain)
-        let list = CONFIG.TokenList.filter(k => (k.Name === chain))[0]?.List
-        let name
-        if (list) {
-            name = list.filter(k => (k.address === address))[0]?.name
-        }
-        return name
-    }
     const onChangeDir = () => {
         let toChainId_ = toChainId
         setToChainId(fromChainId)
         setFormChainId(toChainId_)
     }
+    const onFromBalance = () => {
+        getBalance(fromAsset, fromChainId).then((balance => {
+            console.log(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
+            setFromAmount(formatNumber(ethers.utils.formatEther(balance.toString()), 3))
+        })).catch(err => console.error(err))
+    }
+    const onToBalance = () => {
+        getBalance(toAsset, toChainId).then((balance => {
+            console.log(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
+            setToAmount(formatNumber(ethers.utils.formatEther(balance.toString()), 3))
+        })).catch(err => console.error(err))
+    }
+
     return (
         <Container className="container-fluid swap">
             <ToastContainer />
@@ -205,9 +189,9 @@ const Swap = () => {
                         Bridge Assets
                     </span>
                 </div>
-                <Selection dir={"from"} onSelectChain={onFromChainSelect} onTokenSelect={onFromTokenSelect} chain={fromChainId} setInput={onFromInputChange} amount={fromAmount} />
+                <Selection dir={"from"} onSelectChain={onFromChainSelect} onTokenSelect={onFromTokenSelect} chain={fromChainId} setInput={onFromInputChange} amount={fromAmount} onMaxClick={onFromBalance} />
                 <div className="direction"><img src="https://cbridge.celer.network/static/media/arrowupdown.963b18ea.svg" onClick={onChangeDir} /></div>
-                <Selection dir={"to"} onSelectChain={onToChainSelect} onTokenSelect={onToTokenSelect} chain={toChainId} setInput={onToInputChange} amount={toAmount} />
+                <Selection dir={"to"} onSelectChain={onToChainSelect} onTokenSelect={onToTokenSelect} chain={toChainId} setInput={onToInputChange} amount={toAmount} onMaxClick={onToBalance} />
                 <Button display={createBtnTxt} spinner={creatingOrder} onclick={onCreateOrder} disable={disableCreate}></Button>
             </div>
         </Container>
