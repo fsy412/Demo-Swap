@@ -128,7 +128,34 @@ const Swap = () => {
         return tokenAddress
     }
 
+    const changeNetwork = (name) => {
+        if (name == "BSCTEST") {
+            window.ethereum.request({
+                method: "wallet_addEthereumChain",
+                params: [{
+                    chainId: '0x61',
+                    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+                    chainName: "Binance Smart Chain Testnet",
+                    nativeCurrency: {
+                        name: "BNB",
+                        symbol: "TBNB",
+                        decimals: 18
+                    },
+                    blockExplorerUrls: ["https://testnet.bscscan.com"]
+                }]
+            });
+        } else {
+            window.ethereum.request({
+                method: "wallet_switchEthereumChain",
+                params: [{
+                    chainId: '0x4',
+                }]
+            });
+        }
+    }
+
     const onCreateOrder = async () => {
+        // changeNetwork()
         setCreatingOrder(true)
         console.log('onCreateOrder')
         console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', fromAmount)
@@ -152,9 +179,9 @@ const Swap = () => {
                 notify('Order Created')
                 setCreateBtnTxt("Create Order")
             }).catch(e => {
-                notifyError(e.message); setCreateBtnTxt("Create Order")
-                setCreatingOrder(false)
+                notifyError(e.message)
                 setCreateBtnTxt("Create Order")
+                setCreatingOrder(false)
             })
         }).catch(e => {
             notifyError(e.message);
@@ -163,19 +190,23 @@ const Swap = () => {
         })
     }
     const onChangeDir = () => {
+        console.log(chainName, fromChainId)
+        if (chainName === fromChainId) {
+            changeNetwork(toChainId)
+        }
         let toChainId_ = toChainId
         setToChainId(fromChainId)
         setFormChainId(toChainId_)
     }
     const onFromBalance = () => {
         getBalance(fromAsset, fromChainId).then((balance => {
-            console.log(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
+            // console.log(formatNumber(ethers.utils.formatEther(balance.toString()), 3))
             setFromAmount(formatNumber(ethers.utils.formatEther(balance.toString()), 3))
         })).catch(err => console.error(err))
     }
     const onToBalance = () => {
         getBalance(toAsset, toChainId).then((balance => {
-            console.log(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
+            // console.log(formatNumber(ethers.utils.formatEther(balance.toString()), 3))
             setToAmount(formatNumber(ethers.utils.formatEther(balance.toString()), 3))
         })).catch(err => console.error(err))
     }
@@ -186,7 +217,7 @@ const Swap = () => {
             <div className="selectionWrapper">
                 <div className="title">
                     <span className="text">
-                        Bridge Assets
+                        Swap Assets
                     </span>
                 </div>
                 <Selection dir={"from"} onSelectChain={onFromChainSelect} onTokenSelect={onFromTokenSelect} chain={fromChainId} setInput={onFromInputChange} amount={fromAmount} onMaxClick={onFromBalance} />
