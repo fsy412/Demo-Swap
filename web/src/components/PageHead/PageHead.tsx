@@ -20,10 +20,10 @@ const PageHead = () => {
                         {account != "" ? <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link> : null}
                     </Nav>
                     <Nav>
-                        <Nav.Link as={Link} className="faucet" to="/" >Swap</Nav.Link>
+                        {account != "" ? <Nav.Link as={Link} className="faucet" to="/" >Swap</Nav.Link> : null}
                     </Nav>
                     <Nav>
-                        <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
+                        {account != "" ? <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link> : null}
                     </Nav>
                     <Nav className="me-auto"></Nav>
                     <Nav>

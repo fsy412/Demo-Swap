@@ -156,7 +156,9 @@ const Swap = () => {
     // }
 
     const onCreateOrder = async () => {
-        // changeNetwork()
+        // if (fromChainId !== chainName) {
+        //     changeNetwork(chainName)
+        // }
         setCreatingOrder(true)
         console.log('onCreateOrder')
         console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', fromAmount)
