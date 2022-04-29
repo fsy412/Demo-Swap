@@ -10,7 +10,7 @@ const Web3Context = createContext(null);
 
 export const Web3Provider = (props: any) => {
   const [account, setAccount] = useState('');
-  const [signer, setSigner] = useState(null);
+  const [signer, setSigner] = useState<any>(null);
   const [blockchainId, setBlockchainId] = useState(0);
   const [chainName, setChainName] = useState('');
 
@@ -27,45 +27,76 @@ export const Web3Provider = (props: any) => {
     approveSwap: async (erc20, swap, amount) => { },
     getOrderList: (swapAddress) => { },
     createOrder: async (chainFrom, asset_from, amountFrom, chainTo, assetTo, amountTo) => { },
-    matchOrder: async (fromChainId, chainId, orderId, asset, amount, payee) => { },
+    matchOrder: async (fromChainId, chainId, orderId, asset, amount, payee, hashKey) => { },
     getSwapAddress: (chainId) => { },
     faucet: (tokenAddress) => { },
     getBalance: async (tokenName, chain) => { },
+    unlockAsset: async (fromChainId, chainId, orderId, hashKey, payee) => { },
   }
 
-  useEffect(() => {
-    const checkConnection = async () => {
-      // console.log("checkConnection", blockchainId);
-      if (window.ethereum) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const { chainId } = await provider.getNetwork();
-        setBlockchainId(chainId);
-        (chainId === 97) ? setChainName("BSCTEST") : setChainName("RINKEBY")
+  useEffect((): (() => void) | undefined => {
+    const { ethereum } = window as any;
 
-        if (blockchainId != 0) {
-          const addresses = await provider.listAccounts();
-          if (addresses.length) {
-            setAccount(addresses[0]);
-            const signer = provider.getSigner();
-            setSigner(signer);
-          } else {
-            return;
+    if (ethereum && ethereum.on) {
+      const handleConnect = (): void => {
+        console.log("Handling 'connect' event");
+      };
+
+      const handleChainChanged = (chainId: string | number): void => {
+        console.log("Handling 'chainChanged' event with payload", chainId);
+        (chainId == 0x61) ? setChainName("BSCTEST") : setChainName("RINKEBY")
+        const checkConnection = async () => {
+          if (window.ethereum) {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const { chainId } = await provider.getNetwork();
+            setBlockchainId(chainId);
+            (chainId === 97) ? setChainName("BSCTEST") : setChainName("RINKEBY")
+
+            if (blockchainId != 0) {
+              const addresses = await provider.listAccounts();
+              if (addresses.length) {
+                setAccount(addresses[0]);
+                const signer = provider.getSigner();
+                setSigner(signer);
+              } else {
+                return;
+              }
+            }
           }
+        };
+        checkConnection();
+      };
+
+      const handleAccountsChanged = (accounts: string[]): void => {
+        signer.getAddress().then((account) => setAccount(account))
+      };
+
+      ethereum.on('connect', handleConnect);
+      ethereum.on('chainChanged', handleChainChanged);
+      ethereum.on('accountsChanged', handleAccountsChanged);
+
+      // cleanup function
+      return (): void => {
+        if (ethereum.removeListener) {
+          ethereum.removeListener('connect', handleConnect);
+          ethereum.removeListener('chainChanged', handleChainChanged);
+          ethereum.removeListener('accountsChanged', handleAccountsChanged);
         }
-      }
-    };
-    checkConnection();
-  }, [blockchainId]);
+      };
+    }
+  }, [blockchainId, account, signer]);
 
   functionsToExport.connectWallet = async () => {
+    console.log('connectWallet');
     try {
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
       const provider = new ethers.providers.Web3Provider(connection);
       const signer = provider.getSigner();
       const userAddress = await signer.getAddress();
-      const { chainId } = await provider.getNetwork()
-      setBlockchainId(chainId)
+      const { chainId } = await provider.getNetwork();
+      setBlockchainId(chainId);
+      (chainId === 97) ? setChainName("BSCTEST") : setChainName("RINKEBY")
       setAccount(userAddress);
       setSigner(signer);
     } catch (error) {
@@ -99,7 +130,6 @@ export const Web3Provider = (props: any) => {
 
     }
     return orderList
-
   };
 
   // function create_order(uint256 chain_from, address asset_from, uint256 amount_from, uint256 chain_to, address asset_to, uint amount_to) public returns (bool) {
@@ -111,10 +141,18 @@ export const Web3Provider = (props: any) => {
     await transaction.wait()
   };
 
-  functionsToExport.matchOrder = async (fromChainId, chainId, orderId, asset, amount, payee) => {
+  functionsToExport.matchOrder = async (fromChainId, chainId, orderId, asset, amount, payee, hashKey) => {
     console.log("matchOrder", 'from chain:', fromChainId, 'current chain:', chainId, 'orderId', orderId, 'asset:', asset, 'amount:', amount.toString(), 'payee', payee)
     let swapContract = getContract(getChainSwapAddress(chainId), Swap.abi)
-    const transaction = await swapContract.match_order(fromChainId, orderId, asset, amount.toString(), payee)
+    const transaction = await swapContract.match_order(fromChainId, orderId, asset, amount.toString(), payee, hashKey)
+    await transaction.wait()
+  };
+
+  // function unlock_asset(string calldata chain_id, uint256 order_id, string calldata hashkey, address payee_address) public {
+  functionsToExport.unlockAsset = async (fromChainId, chainId, orderId, hashKey, payee) => {
+    let swapContract = getContract(getChainSwapAddress(chainId), Swap.abi)
+    console.log("unlockAsset", 'chainId:', chainId, 'swapContract', getChainSwapAddress(chainId), 'orderId:', orderId, 'hashKey', hashKey, 'payee:', payee)
+    const transaction = await swapContract.unlock_asset(fromChainId, orderId, hashKey, payee)
     await transaction.wait()
   };
 

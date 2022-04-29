@@ -2,14 +2,14 @@ const networks = {
     BSC: {
         Name: "BSCTEST",
         ChanId: 97,
-        SwapAddress: "0xc4c9e60452BBE2D0b57f040420644004F6f96d2F",
+        SwapAddress: "0x8eEF8F8a6a800A8bd5f7051D5e31DC91D34DA6d6",
         USDCAddress: "0xB33f8CEE067392aBD54b1Ecec75edc2d6b193473",
-        Rpc:"https://data-seed-prebsc-2-s2.binance.org:8545"
+        Rpc:"https://data-seed-prebsc-1-s1.binance.org:8545"
     },
     ETH: {
         Name: "RINKEBY",
         ChanId: 4,
-        SwapAddress: "0x16a833fc393103b305B2bc379Cf6302d399e8a9D",
+        SwapAddress: "0xd84cd8a13f616b9AD8cBa814c2715Bc1e22660f2",
         USDCAddress: "0xD2ccfe099E19Dc03e0802C659A446db720C01D71",
         Rpc:"https://rinkeby.infura.io/v3/f6673495815e4dcbbd271ef93de098ec"
     },

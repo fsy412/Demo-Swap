@@ -1,4 +1,4 @@
-import { Container, Dropdown, Table, Row, Col, Toast } from "react-bootstrap"
+import { Container, Dropdown, Table, Row, Col, Toast, DropdownButton, InputGroup, FormGroup, FormControl } from "react-bootstrap"
 import { useEffect, useState, useContext, useRef } from "react";
 import Web3Context, { Web3Provider } from "../../context/Web3Context"
 import "./index.scss"
@@ -6,25 +6,54 @@ import { ethers } from 'ethers'
 import { CONFIG } from '../../config/chain'
 import { Order } from "../../models/models"
 import { Button } from "../../components/Button/Button"
-import { formatNumber } from "../../util/format"
+import Selection from "../../components/Selection/Selection"
+import { formatNumber } from "../../util/util"
 import { useDispatch, useSelector } from 'react-redux';
 import { walletActions } from "../../redux/actions"
 import { walletSelectors } from "../../redux/selectors";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { changeNetwork } from "../../util/util"
 
 const Swap = () => {
     const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress, getBalance } = useContext(Web3Context);
-    const [fromChainId, setFormChainId] = useState('Select Chain');
-    const [fromAsset, setFormAsset] = useState('Select Token');
+    const [fromChainId, setFormChainId] = useState('BSCTEST');
+    const [fromAsset, setFormAsset] = useState('USDC');
     const [fromBalance, setFromBalance] = useState('0');
 
-    const [toChainId, setToChainId] = useState('Select Chain');
-    const [toAsset, setToAsset] = useState('Select Token');
+    const [toChainId, setToChainId] = useState('RINKEBY');
+    const [toAsset, setToAsset] = useState('USDC');
     const [toBalance, setToBalance] = useState('0');
 
     const [orders, setOrders] = useState<Order[]>([]);
     const refFromAmount = useRef<HTMLInputElement>(null);
     const refToAmount = useRef<HTMLInputElement>(null);
-    const [creatingOrder, setCreatingOrder] = useState(Boolean);
+    const [creatingOrder, setCreatingOrder] = useState<boolean>(false);
+    const [disableCreate, setDisableCreate] = useState<boolean>(true);
+
+    const [fromAmount, setFromAmount] = useState('');
+    const [toAmount, setToAmount] = useState('');
+    const [createBtnTxt, setCreateBtnTxt] = useState('Create Order');
+
+    const notify = (msg) => toast.success(msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
+    const notifyError = (msg) => toast.error(msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
 
     const dispatch = useDispatch();
     useEffect(() => {
@@ -50,16 +79,12 @@ const Swap = () => {
     const onFromTokenSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let token = (e.target as HTMLInputElement).textContent;
+        console.log("onFromTokenSelect", token)
         setFormAsset(token)
     }
     const onFromChainSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
-        if (fromAsset != 'Select Token') {
-            getBalance(fromAsset, chain).then((balance => {
-                setFromBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
-            })).catch(err => console.error(err))
-        }
         setFormChainId(chain)
     }
     const onToTokenSelect = (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
@@ -70,24 +95,28 @@ const Swap = () => {
     const onToChainSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
         let chain = (e.target as HTMLInputElement).textContent;
-        if (toAsset != 'Select Token') {
-            getBalance(fromAsset, chain).then((balance => {
-                setToBalance(formatNumber(ethers.utils.formatEther(balance.toString()), 3));
-            })).catch(err => console.error(err))
-        }
         setToChainId(chain)
     }
-    const onFromInputChange = (e) => {
-        const value = e.target.value.replace(/[^\d]/, "");
-        console.log(value)
-        if (+value !== 0) {
-          
-        }
+    const onFromInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+        const val = e.currentTarget.value;
+        const re = /^[0-9\b]+$/;
+        console.log(val, e.currentTarget.validity.valid)
+        setDisableCreate(false)
+        setFromAmount(val)
+        setToAmount(val)
     }
 
-    const onToInputChange = (e) => { }
+    const onToInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+        const val = e.currentTarget.value;
+        const re = /^[0-9\b]+$/;
+        console.log(val, e.currentTarget.validity.valid)
+        setDisableCreate(false)
+        setFromAmount(val)
+        setToAmount(val)
+    }
 
     const getFromAssetAddress = () => {
+        console.log('fromAsset', fromAsset, 'chain', chainName)
         let list = CONFIG.TokenList.filter(k => (k.Name === chainName))[0].List
         let tokenAddress = list.filter(k => (k.name == fromAsset))[0].address;
         // console.log(`token:${formAsset} address:${tokenAddress}, chain:${chainName}`)
@@ -100,156 +129,104 @@ const Swap = () => {
         return tokenAddress
     }
 
+    // const changeNetwork = (name) => {
+    //     if (name == "BSCTEST") {
+    //         window.ethereum.request({
+    //             method: "wallet_addEthereumChain",
+    //             params: [{
+    //                 chainId: '0x61',
+    //                 rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+    //                 chainName: "Binance Smart Chain Testnet",
+    //                 nativeCurrency: {
+    //                     name: "BNB",
+    //                     symbol: "TBNB",
+    //                     decimals: 18
+    //                 },
+    //                 blockExplorerUrls: ["https://testnet.bscscan.com"]
+    //             }]
+    //         });
+    //     } else {
+    //         window.ethereum.request({
+    //             method: "wallet_switchEthereumChain",
+    //             params: [{
+    //                 chainId: '0x4',
+    //             }]
+    //         });
+    //     }
+    // }
+
     const onCreateOrder = async () => {
+        // if (fromChainId !== chainName) {
+        //     changeNetwork(chainName)
+        // }
         setCreatingOrder(true)
         console.log('onCreateOrder')
-        console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', refFromAmount.current?.value)
-        console.log('to asset:', getToAssetAddress(), ' chain:', toChainId, 'amount:', refToAmount.current?.value)
+        console.log('from asset:', getFromAssetAddress(), ' chain:', fromChainId, 'amount:', fromAmount)
+        console.log('to asset:', getToAssetAddress(), ' chain:', toChainId, 'amount:', toAmount)
         console.log('swap address:', getSwapAddress(chainName))
 
         // approve swap 
-        let amount = ethers.utils.parseEther(refFromAmount.current?.value)
-        await approveSwap(getFromAssetAddress(), getSwapAddress(chainName), amount)
-        console.log('approve done')
-        // create order
-        let chain_from = fromChainId
-        let asset_from = getFromAssetAddress()
-        let amount_from = amount
-        let chain_to = toChainId
-        let asset_to = getToAssetAddress()
-        let amount_to = ethers.utils.parseEther(refToAmount.current?.value)
-
-        console.log('createOrder start')
-        await createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to)
-        setCreatingOrder(false)
-        return
+        setCreateBtnTxt("Approving")
+        let amount = ethers.utils.parseEther(fromAmount.toString())
+        approveSwap(getFromAssetAddress(), getSwapAddress(chainName), amount).then(() => {
+            // create order
+            let chain_from = fromChainId
+            let asset_from = getFromAssetAddress()
+            let amount_from = amount
+            let chain_to = toChainId
+            let asset_to = getToAssetAddress()
+            let amount_to = ethers.utils.parseEther(toAmount)
+            setCreateBtnTxt("Creating Order")
+            createOrder(chain_from, asset_from, amount_from, chain_to, asset_to, amount_to).then(() => {
+                setCreatingOrder(false)
+                notify('Order Created')
+                setCreateBtnTxt("Create Order")
+            }).catch(e => {
+                notifyError(e.message)
+                setCreateBtnTxt("Create Order")
+                setCreatingOrder(false)
+            })
+        }).catch(e => {
+            notifyError(e.message);
+            setCreateBtnTxt("Create Order")
+            setCreatingOrder(false)
+        })
     }
-
-    const onBuyOrder = async (order) => {
-        console.log('onBuyOrder', order)
-        console.log('approveSwap', getSwapAddress(chainName), 'token', order.toTokenContract, 'orderId', order.orderId.toString(), 'amount', order.toAmount.toString())
-        console.log('matchOrder', 'fromChainId:', order.fromChainId, 'toChainId', order.toChainId, 'orderId', +order.orderId.toString(), 'token', order.toTokenContract, 'amount', order.toAmount.toString())
-
-        await approveSwap(order.toTokenContract, getSwapAddress(chainName), order.toAmount.toString())
-        await matchOrder(order.fromChainId, order.toChainId, +order.orderId.toString(), order.toTokenContract, order.toAmount, order.sender)
-    }
-
-    const getTokenName = (address: string, chain: string) => {
-        // console.log('address', address, 'chain', chain)
-        let list = CONFIG.TokenList.filter(k => (k.Name === chain))[0]?.List
-        let name
-        if (list) {
-            name = list.filter(k => (k.address === address))[0]?.name
+    const onChangeDir = () => {
+        console.log(chainName, fromChainId)
+        if (chainName === fromChainId) {
+            changeNetwork(toChainId)
         }
-        return name
+        let toChainId_ = toChainId
+        setToChainId(fromChainId)
+        setFormChainId(toChainId_)
+    }
+    const onFromBalance = () => {
+        getBalance(fromAsset, fromChainId).then((balance => {
+            // console.log(formatNumber(ethers.utils.formatEther(balance.toString()), 3))
+            setFromAmount(formatNumber(ethers.utils.formatEther(balance.toString()), 3))
+        })).catch(err => console.error(err))
+    }
+    const onToBalance = () => {
+        getBalance(toAsset, toChainId).then((balance => {
+            // console.log(formatNumber(ethers.utils.formatEther(balance.toString()), 3))
+            setToAmount(formatNumber(ethers.utils.formatEther(balance.toString()), 3))
+        })).catch(err => console.error(err))
     }
 
     return (
-        <Container className="container">
-            <div className="SelectionBox" >
-                <div className="textBox">
-                    <span className="textFrom">
-                        From
-                    </span>
-                    <span className="textBalance">
-                        Balance: {formatNumber(fromBalance, 3)}
+        <Container className="container-fluid swap">
+            <ToastContainer />
+            <div className="selectionWrapper">
+                <div className="title">
+                    <span className="text">
+                        Swap Assets
                     </span>
                 </div>
-                <div className="inputBox">
-                    <div className="inputWrapper">
-                        <input ref={refFromAmount} className="inputControl" type="number" min="0" onChange={onFromInputChange} onWheel={event => event.currentTarget.blur()}></input>
-                    </div>
-                    <div className="selectWrapper">
-                        <Dropdown className="tokenSelect" onSelect={onFromTokenSelect}>
-                            <Dropdown.Toggle className="dropdownToggle" id="dropdown-basic">
-                                {fromAsset}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="dropdownMenu">
-                                <Dropdown.Item className="dropdownItem" href=""><img className="icon" src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png"></img>USDC</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <Dropdown className="tokenSelect" onSelect={onFromChainSelect}>
-                            <Dropdown.Toggle className="dropdownToggle" id="dropdown-basic">
-                                {fromChainId}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="dropdownMenu">
-                                <Dropdown.Item className="dropdownItem" href=""><img className="icon" src="https://anyswap.exchange/static/media/ETH.cec4ef9a.svg"></img>RINKEBY</Dropdown.Item>
-                                <Dropdown.Item className="dropdownItem" href=""><img className="icon" src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg"></img>BSCTEST</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
-                </div>
-            </div>
-
-            <div className="SelectionBox" >
-                <div className="textBox">
-                    <span className="textFrom">
-                        To
-                    </span>
-                    <span className="textBalance">
-                        Balance: {toBalance}
-                    </span>
-                </div>
-                <div className="inputBox">
-                    <div className="inputWrapper">
-                        <input ref={refToAmount} className="inputControl" type="number" min="0" onChange={onToInputChange} onWheel={event => event.currentTarget.blur()}></input>
-                    </div>
-                    <div className="selectWrapper">
-                        <Dropdown className="tokenSelect" onSelect={onToTokenSelect}>
-                            <Dropdown.Toggle className="dropdownToggle" id="dropdown-basic">
-                                {toAsset}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="dropdownMenu">
-                                <Dropdown.Item className="dropdownItem" href=""><img className="icon" src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png"></img>USDC</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <Dropdown className="tokenSelect" onSelect={onToChainSelect}>
-                            <Dropdown.Toggle className="dropdownToggle" id="dropdown-basic">
-                                {toChainId}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="dropdownMenu">
-                                <Dropdown.Item className="dropdownItem" href=""><img className="icon" src="https://anyswap.exchange/static/media/ETH.cec4ef9a.svg"></img>RINKEBY</Dropdown.Item>
-                                <Dropdown.Item className="dropdownItem" href=""><img className="icon" src="https://anyswap.exchange/static/media/BNB.c6c25fc0.svg"></img>BSCTEST</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
-                </div>
-            </div>
-            <div>
-                {/* <button className="createButton" onClick={onCreateOrder}>Create Order</button> */}
-                <Button display={"Create Order"} spinner={creatingOrder} onclick={onCreateOrder}></Button>
-            </div>
-            <div>
-                <Table striped bordered hover variant="">
-                    <thead className="tableHeader">
-                        <tr>
-                            <th>Id</th>
-                            <th>Coin</th>
-                            <th>From Chain</th>
-                            <th>Amount</th>
-                            <th>To Chain</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody className="tableBody">
-                        {orders.map((order: Order) => {
-                            return (
-                                <tr key={order.orderId.toString() + order.fromChainId}>
-                                    <td>{order.orderId.toString()}</td>
-                                    <td>{getTokenName(order.tokenContract, order.fromChainId)}</td>
-                                    <td>{order.fromChainId}</td>
-                                    <td>{formatNumber(ethers.utils.formatEther(order.amount.toString()), 3)}</td>
-                                    <td>{order.toChainId}</td>
-                                    <td>{formatNumber(ethers.utils.formatEther(order.toAmount.toString()), 3)} {getTokenName(order.toTokenContract, order.toChainId)}</td>
-                                    <td>{order.filled ? "Filled" : "Open"}</td>
-                                    {order.filled ? <td></td> : <td className="buyButtonWrapper" > <button className="buyButton" onClick={() => onBuyOrder(order)}>Buy</button></td>}
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </Table>
+                <Selection dir={"from"} onSelectChain={onFromChainSelect} onTokenSelect={onFromTokenSelect} chain={fromChainId} setInput={onFromInputChange} amount={fromAmount} onMaxClick={onFromBalance} />
+                <div className="direction"><img src="https://cbridge.celer.network/static/media/arrowupdown.963b18ea.svg" onClick={onChangeDir} /></div>
+                <Selection dir={"to"} onSelectChain={onToChainSelect} onTokenSelect={onToTokenSelect} chain={toChainId} setInput={onToInputChange} amount={toAmount} onMaxClick={onToBalance} />
+                <Button display={createBtnTxt} spinner={creatingOrder} onclick={onCreateOrder} disable={disableCreate}></Button>
             </div>
         </Container>
     )
