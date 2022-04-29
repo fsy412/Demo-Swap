@@ -3,7 +3,7 @@ import { Table, Button, Tab, Tabs } from 'react-bootstrap'
 import Web3Context, { Web3Provider } from "../../context/Web3Context"
 import "./trade.scss"
 import { Order } from "../../models/models"
-import { getChainImg, shortAddress, formatNumber, getTokenName } from "../../util/util"
+import { getChainImg, shortAddress, formatNumber, getTokenName, changeNetwork } from "../../util/util"
 import HashModal from "../../components/Modal/HashModal"
 import UnlockModal from "../../components/Modal/UnlockModal"
 import { ethers } from 'ethers'
@@ -76,7 +76,12 @@ const Trade = () => {
                     //     notifyError("Self trade!")
                     //     return
                     // }
-                    setBuyOrder(order); setModalShow(true)
+
+                    if (order.toChainId != chainName) {
+                        changeNetwork(order.toChainId)
+                    }
+                    setBuyOrder(order)
+                    setModalShow(true)
                 }}>Buy</button></td>
             )
         }

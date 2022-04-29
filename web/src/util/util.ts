@@ -43,7 +43,7 @@ const getChainImg = (chain: string) => {
 }
 
 const shortAddress = (val: string) => {
-    return  val.substring(0, 6) + '...' + val.substring(val.length - 4, val.length) 
+    return val.substring(0, 6) + '...' + val.substring(val.length - 4, val.length)
 }
 
 const getTokenName = (address: string, chain: string) => {
@@ -56,11 +56,38 @@ const getTokenName = (address: string, chain: string) => {
     return name
 }
 
+const changeNetwork = (name) => {
+    if (name == "BSCTEST") {
+        window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+                chainId: '0x61',
+                rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+                chainName: "Binance Smart Chain Testnet",
+                nativeCurrency: {
+                    name: "BNB",
+                    symbol: "TBNB",
+                    decimals: 18
+                },
+                blockExplorerUrls: ["https://testnet.bscscan.com"]
+            }]
+        });
+    } else {
+        window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{
+                chainId: '0x4',
+            }]
+        });
+    }
+}
+
 export {
     formatNumber,
     getChainImg,
     shortAddress,
-    getTokenName
+    getTokenName,
+    changeNetwork
 }
 
 

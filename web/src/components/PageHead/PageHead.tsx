@@ -13,14 +13,14 @@ const PageHead = () => {
         <div className=" navbar" >
             <Navbar bg="light" expand="md" >
                 <img className="logo" src="logo.png" alt="logo" />
-                <Navbar.Brand as={Link} className="headerText" to="/">Bridge</Navbar.Brand>
+                <Navbar.Brand as={Link} className="headerText" to="/">Swap</Navbar.Brand>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto"></Nav>
                     <Nav>
                         {account != "" ? <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link> : null}
                     </Nav>
                     <Nav>
-                        <Nav.Link as={Link} className="faucet" to="/" >Bridge</Nav.Link>
+                        <Nav.Link as={Link} className="faucet" to="/" >Swap</Nav.Link>
                     </Nav>
                     <Nav>
                         <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>

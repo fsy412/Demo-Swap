@@ -13,6 +13,7 @@ import { walletActions } from "../../redux/actions"
 import { walletSelectors } from "../../redux/selectors";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { changeNetwork } from "../../util/util"
 
 const Swap = () => {
     const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress, getBalance } = useContext(Web3Context);
@@ -128,31 +129,31 @@ const Swap = () => {
         return tokenAddress
     }
 
-    const changeNetwork = (name) => {
-        if (name == "BSCTEST") {
-            window.ethereum.request({
-                method: "wallet_addEthereumChain",
-                params: [{
-                    chainId: '0x61',
-                    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-                    chainName: "Binance Smart Chain Testnet",
-                    nativeCurrency: {
-                        name: "BNB",
-                        symbol: "TBNB",
-                        decimals: 18
-                    },
-                    blockExplorerUrls: ["https://testnet.bscscan.com"]
-                }]
-            });
-        } else {
-            window.ethereum.request({
-                method: "wallet_switchEthereumChain",
-                params: [{
-                    chainId: '0x4',
-                }]
-            });
-        }
-    }
+    // const changeNetwork = (name) => {
+    //     if (name == "BSCTEST") {
+    //         window.ethereum.request({
+    //             method: "wallet_addEthereumChain",
+    //             params: [{
+    //                 chainId: '0x61',
+    //                 rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+    //                 chainName: "Binance Smart Chain Testnet",
+    //                 nativeCurrency: {
+    //                     name: "BNB",
+    //                     symbol: "TBNB",
+    //                     decimals: 18
+    //                 },
+    //                 blockExplorerUrls: ["https://testnet.bscscan.com"]
+    //             }]
+    //         });
+    //     } else {
+    //         window.ethereum.request({
+    //             method: "wallet_switchEthereumChain",
+    //             params: [{
+    //                 chainId: '0x4',
+    //             }]
+    //         });
+    //     }
+    // }
 
     const onCreateOrder = async () => {
         // changeNetwork()
