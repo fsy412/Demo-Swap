@@ -34,7 +34,7 @@ const Trade = () => {
         const fetchOrders = async () => {
             let orderList = await getOrderList()
             setOrders(orderList)
-            setUnFilledOrders(orderList.filter((order) => { return order.status == "Open" || order.status == "Locked" }))
+            setUnFilledOrders(orderList.filter((order) => { return (order.status == "Open" || order.status == "Locked") && order.sender !== account }))
             setFilledOrders(orderList.filter((order) => { return order.status == "Filled" }))
             setMyOrders(orderList.filter((order) => { return order.sender == account }))
         }
@@ -89,6 +89,10 @@ const Trade = () => {
             return (
                 <td className="text-center" > <button className="actionBtn" onClick={() => { setUnlockOrder(order); setUnlockModalShow(true) }}>Unlock</button></td>
             )
+        } else {
+            // return (
+            //     <td className="text-center" >   </td>
+            // )
         }
 
         if (order.status == "Filled") {
@@ -96,6 +100,9 @@ const Trade = () => {
                 <td className="text-center" ></td>
             )
         }
+        return (
+            <td className="text-center" ></td>
+        )
     }
 
     return (
@@ -133,7 +140,7 @@ const Trade = () => {
                         </Table>
                     </div>
                 </Tab>
-                <Tab eventKey="openOrder" title="Current Order">
+                <Tab eventKey="openOrder" title="My Order">
                     <div className=' '>
                         <Table bordered hover borderless variant="dark">
                             <thead>
