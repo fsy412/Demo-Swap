@@ -10,20 +10,20 @@ const PageHead = () => {
         return chainName + " (" + val.substring(0, 6) + '...' + val.substring(val.length - 4, val.length) + ")"
     }
     return (
-        <div className=" navbar" >
+        <div className="navbar" >
             <Navbar bg="light" expand="md" >
-                <img className="logo" src="logo.png" alt="logo" />
+                <img className="logo" src="dant.png" alt="logo" />
                 <Navbar.Brand as={Link} className="headerText" to="/">Swap</Navbar.Brand>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto"></Nav>
                     <Nav>
-                        {account != "" ? <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link> : null}
+                        <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link>
                     </Nav>
                     <Nav>
-                        {account != "" ? <Nav.Link as={Link} className="faucet" to="/" >Swap</Nav.Link> : null}
+                        <Nav.Link as={Link} className="faucet" to="/" >Swap</Nav.Link>
                     </Nav>
                     <Nav>
-                        {account != "" ? <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link> : null}
+                        <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
                     </Nav>
                     <Nav className="me-auto"></Nav>
                     <Nav>

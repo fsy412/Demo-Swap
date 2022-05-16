@@ -1,12 +1,11 @@
 import React, { useState, useContext } from "react";
-import { Container, Dropdown, InputGroup, FormControl} from 'react-bootstrap'
+import { Container, Dropdown, InputGroup, FormControl } from 'react-bootstrap'
 import "./faucet.scss"
 import Web3Context, { Web3Provider } from "../../context/Web3Context"
 import { CONFIG } from '../../config/chain'
 
 export const Faucet = () => {
     const { account, chainName, faucet } = useContext(Web3Context);
-    // const [showA, setShowA] = useState(true);
 
     const handleSelect = async (eventKey: any, e: React.SyntheticEvent<EventTarget>) => {
         e.preventDefault()
@@ -18,32 +17,20 @@ export const Faucet = () => {
             await faucet(tokenAddress)
         }
     }
-    const getTokenList = () => {
-        return (chainName) ? CONFIG.FaucetTokenList.filter(k => (k.Name === chainName))[0].List : []
-    }
 
     return (
-        <Container className="faucetContainer">
+        <Container className="container-fluid faucetContainer">
             <div className='inputGroup'>
-                <InputGroup className="mb-3 mt-3">
-                    <FormControl
-                        placeholder="Token address"
-                        aria-label="Token address"
-                        aria-describedby="basic-addon2"
-                    />
-                    <Dropdown onSelect={handleSelect}>
-                        <Dropdown.Toggle>
-                            Give me token
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            {getTokenList().map((k) => {
-                                return (
-                                    <Dropdown.Item key={k.name} href="">{k.name}</Dropdown.Item>
-                                )
-                            })}
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </InputGroup>
+                <Dropdown onSelect={handleSelect}>
+                    <Dropdown.Toggle>
+                        Give me token
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {
+                            <Dropdown.Item href="">DANT</Dropdown.Item>
+                        }
+                    </Dropdown.Menu>
+                </Dropdown>
             </div>
         </Container>
     )

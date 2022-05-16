@@ -74,7 +74,7 @@ const Selection = ({
                             variant="outline-secondary"
                             title={
                                 <span>
-                                    <img src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png" /> USDC
+                                    <img src="dant.png" /> DANT
                                 </span>
                             }
                             id="input-group-dropdown-2"
@@ -83,7 +83,7 @@ const Selection = ({
                             className="shadow-none"
                         >
                             <Dropdown.Item href="#">
-                                <span ><img src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png" />USDC</span>
+                                <span ><img src="dant.png" />DANT</span>
                             </Dropdown.Item>
                         </DropdownButton>
                     </div>

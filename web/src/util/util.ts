@@ -53,6 +53,9 @@ const getTokenName = (address: string, chain: string) => {
     if (list) {
         name = list.filter(k => (k.address === address))[0]?.name
     }
+    if (name == "USDC") {
+        return "DANT"
+    }
     return name
 }
 
