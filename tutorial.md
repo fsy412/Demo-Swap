@@ -29,7 +29,7 @@ Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet
   ![](./docs/my_order.jpg)
 
 ##  Make a trade
-  Switch to another account, make sure you have sure you have sufficient ETH on Rinkeby and BNB on BSC testnet for this account.
+  Switch to another account, make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet for this account.
 
   - Click the 'Buy' button
   ![](./docs/buy.jpg)
