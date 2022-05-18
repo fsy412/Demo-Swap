@@ -9,7 +9,9 @@
  ![](./docs/connect_wallet.jpg)
 
 ## Create Order
-Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet
+Create a order to swap 1 DANT token on BSC testnet to Rinkeby.
+
+Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet, 
   - Create order
   
   ![](./docs/create_order.jpg)
@@ -26,7 +28,7 @@ Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet
 
 ## My Order
 
-  Switch to trade tab under the 'My Order' tab, the newly created order is displayed.
+  Switch to 'Trade' tab under the 'My Order' tab, the newly created order is displayed.
 
   ![](./docs/my_order.jpg)
 
