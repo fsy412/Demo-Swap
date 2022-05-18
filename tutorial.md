@@ -45,7 +45,7 @@ Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet
   
    ![](./docs/confirm_buy.jpg)
 
-Wait a few seconds to wait the cross-chain contract finish the transactions.
+Wait a few seconds for cross-chain transactions to be done.
 
 
 ## Unlock to receive the asset 
@@ -56,4 +56,4 @@ Wait a few seconds to wait the cross-chain contract finish the transactions.
 - Click 'Unlock' and input the hash lock word set in previous step to unlock
  ![](./docs/unlock_fund.jpg)
 
-
+ 
