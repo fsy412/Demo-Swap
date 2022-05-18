@@ -11,7 +11,7 @@
 ## Create Order
 Create an order to swap 1 DANT token on BSC testnet to Rinkeby.
 
-Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet, 
+Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet.
   - Create order
   
   ![](./docs/create_order.jpg)
