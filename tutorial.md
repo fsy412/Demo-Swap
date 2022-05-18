@@ -1,4 +1,4 @@
-# Demo-swap usage instructions
+# Demo swap usage instructions
 ##  Connect wallet
    - Select BSC chain
 
