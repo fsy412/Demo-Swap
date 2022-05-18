@@ -16,8 +16,7 @@ Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet
 
   ![](./docs/approve.jpg)
 
-  - Confirm the order creation
-    Click confirm
+  - Confirm the order creation, simply click confirm
     ![](./docs/confirm_order.jpg)
 - Order created successfully
     ![](./docs/order_created.jpg)
@@ -54,5 +53,7 @@ Wait a few seconds to wait the cross-chain contract finish the transactions.
 
   ![](./docs/unlock.jpg)
 
-- Click 'Unlock' and input the hash lock word to unlock
+- Click 'Unlock' and input the hash lock word set in previous step to unlock
  ![](./docs/unlock_fund.jpg)
+
+
