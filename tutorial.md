@@ -21,7 +21,8 @@ Create an order to swap 1 DANT token on BSC testnet to Rinkeby.
 
 
 Make sure you have at least 1 DANT in you BSC wallet.(Go to the 'Faucet' tab to claim DANT token)
-        
+       ![](./docs/faucet.jpg)
+  
 - Create order
   
   ![](./docs/create_order.jpg)
