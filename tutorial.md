@@ -48,7 +48,7 @@ Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet
 Wait a few seconds to wait the cross-chain contract finish the transactions.
 
 
-## Unlock the fund to receive the asset 
+## Unlock to receive the asset 
 - The order status is now 'Locked' , meaning the cross-chain swap is done asset can be unlocked.
 
   ![](./docs/unlock.jpg)
