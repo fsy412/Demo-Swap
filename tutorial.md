@@ -11,14 +11,17 @@
 ## Create Order
 Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet
   - Create order
+  
   ![](./docs/create_order.jpg)
   - Approve the transaction
 
   ![](./docs/approve.jpg)
 
   - Confirm the order creation, simply click confirm
+  
     ![](./docs/confirm_order.jpg)
 - Order created successfully
+  
     ![](./docs/order_created.jpg)
 
 ## My Order
@@ -31,6 +34,7 @@ Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet
   Switch to another account, make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet for this account.
 
   - Click the 'Buy' button
+ 
   ![](./docs/buy.jpg)
 
   - Input hash lock word and click confirm
@@ -54,6 +58,7 @@ Wait a few seconds for cross-chain transactions to be done.
   ![](./docs/unlock.jpg)
 
 - Click 'Unlock' and input the hash lock word set in previous step to unlock
+ 
  ![](./docs/unlock_fund.jpg)
 
  
