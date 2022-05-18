@@ -43,7 +43,7 @@ Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet.
   
     ![](./docs/input_hashlock.jpg)
 
- - Approve the 'Buy' operation
+ - Approve the buy operation
   
    ![](./docs/approve_buy.jpg)
 
