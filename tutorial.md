@@ -40,4 +40,19 @@ Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet
 
  - Approve the 'Buy' operation
   
-   <!-- ![](./docs/approve_buy.jpg) -->
+   ![](./docs/approve_buy.jpg)
+
+ - Confirm to buy
+  
+   ![](./docs/confirm_buy.jpg)
+
+Wait a few seconds to wait the cross-chain contract finish the transactions.
+
+
+## Unlock the fund to receive the asset 
+- The order status is now 'Locked' , meaning the cross-chain swap is done asset can be unlocked.
+
+  ![](./docs/unlock.jpg)
+
+- Click 'Unlock' and input the hash lock word to unlock
+ ![](./docs/unlock_fund.jpg)
