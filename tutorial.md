@@ -11,24 +11,25 @@
 ## Create Order
 Create an order to swap 1 DANT token on BSC testnet to Rinkeby.
 
-Make sure you have at least 1 DANT in you BSC wallet.
-
-Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet.
+ Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet.
 
  
- * [Rinkeby faucet](https://testnet.binance.org/faucet-smart)
+- [Rinkeby faucet](https://rinkebyfaucet.com/)
 
-* [BSC testnet faucet](https://testnet.binance.org/faucet-smart)
+- [BSC testnet faucet](https://testnet.binance.org/faucet-smart)
 
 
-  - Create order
+
+Make sure you have at least 1 DANT in you BSC wallet.(Go to the 'Faucet' tab to claim DANT token)
+        
+- Create order
   
   ![](./docs/create_order.jpg)
-  - Approve the transaction
+- Approve the transaction
 
   ![](./docs/approve.jpg)
 
-  - Confirm the order creation, simply click confirm
+- Confirm the order creation, simply click confirm
   
     ![](./docs/confirm_order.jpg)
 - Order created successfully
@@ -42,7 +43,7 @@ Make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet.
   ![](./docs/my_order.jpg)
 
 ##  Make a trade
-  Switch to another account, make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet for this account.
+Switch to another account, make sure you have sufficient ETH on Rinkeby and BNB on BSC testnet for this account.
 
   - Click the 'Buy' button
  
