@@ -53,9 +53,6 @@ const getTokenName = (address: string, chain: string) => {
     if (list) {
         name = list.filter(k => (k.address === address))[0]?.name
     }
-    if (name == "USDC") {
-        return "DANT"
-    }
     return name
 }
 
@@ -85,12 +82,25 @@ const changeNetwork = (name) => {
     }
 }
 
+const getTokenAddr = (chainName, tokenName) => {
+    if (chainName) {
+        let list = CONFIG.FaucetTokenList.filter(k => (k.Name === chainName))[0].List
+
+        console.log(`list`,list)
+        let tokenAddress = list.filter(k => (k.name == tokenName))[0].address;
+        console.log(`tokenAddress`,tokenAddress)
+        console.log(`getTokenAddr token:${tokenName} address:${tokenAddress}, chain:${chainName}`)
+        return tokenAddress
+    }
+}
+
 export {
     formatNumber,
     getChainImg,
     shortAddress,
     getTokenName,
-    changeNetwork
+    changeNetwork,
+    getTokenAddr
 }
 
 
