@@ -18,11 +18,13 @@ import { changeNetwork } from "../../util/util"
 const Swap = () => {
     const { account, chainName, approveSwap, getOrderList, createOrder, matchOrder, getSwapAddress, getBalance } = useContext(Web3Context);
     const [fromChainId, setFormChainId] = useState('BSCTEST');
+ 
     const [fromAsset, setFormAsset] = useState('DANT');
     const [fromBalance, setFromBalance] = useState('0');
 
     const [toChainId, setToChainId] = useState('RINKEBY');
     const [toAsset, setToAsset] = useState('DANT');
+ 
     const [toBalance, setToBalance] = useState('0');
 
     const [orders, setOrders] = useState<Order[]>([]);
@@ -227,9 +229,11 @@ const Swap = () => {
                 <div className="direction"><img src="https://cbridge.celer.network/static/media/arrowupdown.963b18ea.svg" onClick={onChangeDir} /></div>
                 <Selection dir={"to"} onSelectChain={onToChainSelect} onTokenSelect={onToTokenSelect} chain={toChainId} setInput={onToInputChange} amount={toAmount} onMaxClick={onToBalance} />
                 <Button display={createBtnTxt} spinner={creatingOrder} onclick={onCreateOrder} disable={disableCreate}></Button>
+ 
             </div>
             <div className="tip">
                 <a href="https://github.com/dantenetwork/Demo-Swap/blob/dev/tutorial.md" target="_blank" className='tip'>How to use</a>
+ 
             </div>
         </Container>
     )

@@ -3,14 +3,18 @@ const networks = {
         Name: "BSCTEST",
         ChanId: 97,
         SwapAddress: "0x8eEF8F8a6a800A8bd5f7051D5e31DC91D34DA6d6",
+ 
         DANTAddress: "0x9D3919000E621135a3ab35217dDDa0e6F98E699f",
+ 
         Rpc: "https://data-seed-prebsc-1-s1.binance.org:8545"
     },
     ETH: {
         Name: "RINKEBY",
         ChanId: 4,
         SwapAddress: "0xd84cd8a13f616b9AD8cBa814c2715Bc1e22660f2",
+ 
         DANTAddress: "0x4372FFc9839C5F22459cDB8298601960a760e511",
+ 
         Rpc: "https://rinkeby.infura.io/v3/f6673495815e4dcbbd271ef93de098ec"
     },
     TokenList: [
@@ -33,13 +37,17 @@ const networks = {
         {
             Name: "BSCTEST",
             List: [
+ 
                 { "name": "DANT", "icon": "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png", "address": "0x9D3919000E621135a3ab35217dDDa0e6F98E699f" },
+ 
             ]
         },
         {
             Name: "RINKEBY",
             List: [
+ 
                 { "name": "DANT", "icon": "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png", "address": "0x4372FFc9839C5F22459cDB8298601960a760e511" },
+ 
             ]
         },
     ]

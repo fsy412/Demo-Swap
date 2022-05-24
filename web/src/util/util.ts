@@ -53,6 +53,8 @@ const getTokenName = (address: string, chain: string) => {
     if (list) {
         name = list.filter(k => (k.address === address))[0]?.name
     }
+ 
+ 
     return name
 }
 
@@ -82,6 +84,7 @@ const changeNetwork = (name) => {
     }
 }
 
+ 
 const getTokenAddr = (chainName, tokenName) => {
     if (chainName) {
         let list = CONFIG.FaucetTokenList.filter(k => (k.Name === chainName))[0].List
@@ -94,13 +97,16 @@ const getTokenAddr = (chainName, tokenName) => {
     }
 }
 
+ 
 export {
     formatNumber,
     getChainImg,
     shortAddress,
     getTokenName,
+ 
     changeNetwork,
     getTokenAddr
+ 
 }
 
 
