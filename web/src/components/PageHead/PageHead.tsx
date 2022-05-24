@@ -25,6 +25,11 @@ const PageHead = () => {
                     <Nav>
                         <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
                     </Nav>
+ 
+                    <Nav>
+                        <Nav.Link as={Link} className="faucet" to="/token" >Token Info</Nav.Link>
+                    </Nav>
+ 
                     <Nav className="me-auto"></Nav>
                     <Nav>
                         <Nav.Link className="wallet" onClick={connectWallet}> {account ? short(account?.toString()) : "Connect To Wallet"}</Nav.Link>

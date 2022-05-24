@@ -3,8 +3,11 @@ pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./CrossChain/ContractBase.sol";
+import '@openzeppelin/contracts/utils/Counters.sol';
 
 contract Swap is ContractBase {
+    using Counters for Counters.Counter;
+
     // Destination contract info
     struct DestnContract {
         string contractAddress; // destination contract address
@@ -19,14 +22,12 @@ contract Swap is ContractBase {
         address toTokenContract;
         uint256 amount;
         uint256 toAmount;
-        // bytes32 hashlock;
+        bytes32 hashlock;
         uint256 createTime;
-        // uint256 timelock; // locked UNTIL this time.
-        bool cancelled;
         string fromChainId;
         string toChainId;
-        bool filled;
-        bool transfer;
+        string status;
+        address payee;
     }
 
     struct OrderFill {
@@ -50,10 +51,10 @@ contract Swap is ContractBase {
     mapping(string => mapping(string => string)) public permittedContractMap;
 
     mapping(uint256 => Order) public idToOrder;
-    uint256 _orderIds;
+    Counters.Counter _orderIds;
 
     mapping(uint256 => OrderFill) public idToFillOrder;
-    uint256 _fillOrderIds;
+    Counters.Counter _fillOrderIds;
 
     constructor() public {}
 
@@ -65,36 +66,33 @@ contract Swap is ContractBase {
         address asset_to,
         uint256 amount_to
     ) public returns (bool) {
-        bool ret = IERC20(asset_from).transferFrom(
-            msg.sender,
+        require(IERC20(asset_from).transferFrom(msg.sender,
             address(this),
             amount_from
-        );
-        require(ret, "transfer to swap failed");
-    
-        idToOrder[_orderIds] = Order(
-            _orderIds,
+        ), "transfer to swap failed");
+        uint256 orderId = _orderIds.current();
+        idToOrder[orderId] = Order(
+            orderId,
             msg.sender,
             asset_from,
             asset_to,
             amount_from,
             amount_to,
-            // sha256(abi.encodePacked(uint256(0))),
+            bytes32(0),
             block.timestamp,
-            false,
             chain_from,
             chain_to,
-            false,
-            false
+            "Open",
+            address(0)
         );
-        _orderIds = _orderIds + 1;
+        _orderIds.increment();
         return true;
     }
 
     function query_order(uint256 order_id) public {}
 
     function query_all_orders() public view returns (Order[] memory) {
-        uint256 orderCount = _orderIds;
+        uint256 orderCount = _orderIds.current();
         Order[] memory orders = new Order[](orderCount);
         for (uint256 i = 0; i < orderCount; i++) {
             Order storage order = idToOrder[i];
@@ -108,24 +106,25 @@ contract Swap is ContractBase {
         uint256 order_id,
         address asset,
         uint256 amount, 
-        address payee
+        address payee,
+        string calldata hashkey
     ) public {
-        bool ret = IERC20(asset).transferFrom(msg.sender, address(this), amount);
-        require(ret, "transfer to swap failed");
-        idToFillOrder[_fillOrderIds] = OrderFill(
+        require(IERC20(asset).transferFrom(msg.sender, address(this), amount), "transfer to swap failed");
+        uint256 _fillOrderId = _fillOrderIds.current();
+        idToFillOrder[_fillOrderId] = OrderFill(
             order_id,
             chain_id,
             msg.sender,
             asset,
             amount,
-            sha256(abi.encodePacked(uint256(0))),
+            sha256(abi.encodePacked(hashkey)),
             block.timestamp,
             block.timestamp + 3600,
             payee,
             "created",
             false
         );
-        _fillOrderIds = _fillOrderIds + 1;
+        _fillOrderIds.increment();
 
         mapping(string => DestnContract) storage map = destnContractMap[
             chain_id
@@ -133,7 +132,7 @@ contract Swap is ContractBase {
         DestnContract storage destnContract = map["receive_match_order"];
         require(destnContract.used, "action not registered");
 
-        bytes memory data = abi.encode(order_id, msg.sender, asset, msg.sender, 1, sha256(abi.encodePacked(uint(0))));
+        bytes memory data = abi.encode(order_id, msg.sender, asset, msg.sender, 1, sha256(abi.encodePacked(hashkey)));
         SQOS memory sqos = SQOS(0);
         crossChainContract.sendMessage(
             chain_id,
@@ -173,14 +172,41 @@ contract Swap is ContractBase {
         );
 
         Order storage order = idToOrder[order_id];
-        order.filled = true;
+        order.status = "Locked";
+        order.hashlock = hash;
+        order.payee = payee_address;
+    }
+
+    function unlock_asset(string calldata chain_id, uint256 order_id, string calldata hashkey, address payee_address) public {
+        // bytes32 hash = sha256(abi.encodePacked(hashkey));
+        mapping(string => DestnContract) storage map = destnContractMap[
+            chain_id
+        ];
+        DestnContract storage destnContract = map["recv_unlock_asset"];
+        require(destnContract.used, "action not registered");
+
+        bytes memory data = abi.encode(order_id, hashkey, payee_address);
+        SQOS memory sqos = SQOS(0);
+        crossChainContract.sendMessage(
+            chain_id,
+            destnContract.contractAddress,
+            destnContract.funcName,
+            sqos,
+            data
+        );
+    }
+
+    function recv_unlock_asset(uint256 order_id, string calldata hashkey, address payee_address) public {
+        bytes32 hash = sha256(abi.encodePacked(hashkey));
+        Order storage order = idToOrder[order_id];
+        require(order.hashlock == hash);
+        order.status = "Filled";
+        // order.hashlockCheck = hash;
         bool ret = IERC20(order.tokenContract).transfer(
             payee_address,
             order.amount
         );
-        order.transfer = ret;
-        // require(ret, "transfer payee failed");
-      
+
         // send receive_transfer_asset
         mapping(string => DestnContract) storage map = destnContractMap[
             order.toChainId
@@ -199,15 +225,13 @@ contract Swap is ContractBase {
         );
     }
 
-    function unlock_asset(uint256 order_id, string memory key) public {}
-
     function receive_transfer_asset(uint256 order_id, bytes32 hash) public {
-        uint256 orderCount = _fillOrderIds;
+        uint256 orderCount = _fillOrderIds.current();
         for (uint256 i = 0; i < orderCount; i++) {
             OrderFill storage order = idToFillOrder[i];
             if (order.orderId == order_id){
                 bool ret = IERC20(order.tokenContract).transfer(order.payee, order.amount);
-                order.status = "done";
+                order.status = "Done";
                 order.transfer = ret;
             }
         }

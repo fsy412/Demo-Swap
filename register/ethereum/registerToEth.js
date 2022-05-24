@@ -11,6 +11,7 @@ console.log("crossChainContractAddress:", CONFIG.ETH.CrossChainContractAddress)
 const swapContract = new web3.eth.Contract(Swap.abi, CONFIG.ETH.SwapAddress);
 
 (async function init() {
+
   // destination chain name
   const destinationChainName = 'BSCTEST';
   // swap contract action name
@@ -37,6 +38,21 @@ const swapContract = new web3.eth.Contract(Swap.abi, CONFIG.ETH.SwapAddress);
     const actionParamsType = 'uint256|bytes32';
     const actionParamsName = 'order_id|hash';
     const actionABI = '{"inputs":[{"internalType":"uint256","name":"order_id","type":"uint256"},{"internalType":"bytes32","name":"hash","type":"bytes32"}],"name":"receive_transfer_asset","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+
+    // Register contract info for sending messages to other chains
+    await ethereum.sendTransaction(swapContract, 'registerDestnContract', PrivateKey, [contractActionName, destinationChainName, CONFIG.BSC.SwapAddress, contractActionName]);
+    await ethereum.sendTransaction(swapContract, 'registerMessageABI', PrivateKey, [destinationChainName, CONFIG.BSC.SwapAddress, contractActionName, actionParamsType, actionParamsName]);
+
+    // Register contract info for receiving messages from other chains.
+    await ethereum.sendTransaction(swapContract, 'registerPermittedContract', PrivateKey, [destinationChainName, CONFIG.BSC.SwapAddress, contractActionName]);
+    await ethereum.sendTransaction(swapContract, 'registerContractABI', PrivateKey, [contractActionName, actionABI]);
+  }
+
+  {
+    const contractActionName = 'recv_unlock_asset';
+    const actionParamsType = 'uint256|string|address';
+    const actionParamsName = 'order_id|hashkey|payee_address';
+    const actionABI = '{"inputs":[{"internalType":"uint256","name":"order_id","type":"uint256"},{"internalType":"string","name":"hashkey","type":"string"},{"internalType":"address","name":"payee_address","type":"address"}],"name":"recv_unlock_asset","outputs":[],"stateMutability":"nonpayable","type":"function"}';
 
     // Register contract info for sending messages to other chains
     await ethereum.sendTransaction(swapContract, 'registerDestnContract', PrivateKey, [contractActionName, destinationChainName, CONFIG.BSC.SwapAddress, contractActionName]);

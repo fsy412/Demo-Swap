@@ -9,6 +9,9 @@ import Faucet from "./pages/faucet/faucet"
 import { Provider } from 'react-redux';
 import store from "./redux/store"
 import Trade from './pages/trade/trade';
+ 
+import Tokens from './pages/tokens/tokens';
+ 
 
 function App() {
   return (
@@ -20,6 +23,9 @@ function App() {
             <Route path="/" exact component={() => <Swap />} />
             <Route path="/trade" exact component={() => <Trade />} />
             <Route path="/faucet" exact component={() => <Faucet />} />
+ 
+            <Route path="/token" exact component={() => <Tokens />} />
+ 
             <Footer></Footer>
           </BrowserRouter>
         </Web3Provider>

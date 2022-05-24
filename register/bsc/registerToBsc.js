@@ -46,4 +46,19 @@ const swapContract = new web3.eth.Contract(Swap.abi, CONFIG.BSC.SwapAddress);
     await bsc.sendTransaction(swapContract, 'registerPermittedContract', PrivateKey, [destinationChainName, CONFIG.ETH.SwapAddress, contractActionName]);
     await bsc.sendTransaction(swapContract, 'registerContractABI', PrivateKey, [contractActionName, actionABI]);
   }
+
+  {
+    const contractActionName = 'recv_unlock_asset';
+    const actionParamsType = 'uint256|string|address';
+    const actionParamsName = 'order_id|hashkey|payee_address';
+    const actionABI = '{"inputs":[{"internalType":"uint256","name":"order_id","type":"uint256"},{"internalType":"string","name":"hashkey","type":"string"},{"internalType":"address","name":"payee_address","type":"address"}],"name":"recv_unlock_asset","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+
+    // Register contract info for sending messages to other chains
+    await bsc.sendTransaction(swapContract, 'registerDestnContract', PrivateKey, [contractActionName, destinationChainName, CONFIG.ETH.SwapAddress, contractActionName]);
+    await bsc.sendTransaction(swapContract, 'registerMessageABI', PrivateKey, [destinationChainName, CONFIG.ETH.SwapAddress, contractActionName, actionParamsType, actionParamsName]);
+
+    // Register contract info for receiving messages from other chains.
+    await bsc.sendTransaction(swapContract, 'registerPermittedContract', PrivateKey, [destinationChainName, CONFIG.ETH.SwapAddress, contractActionName]);
+    await bsc.sendTransaction(swapContract, 'registerContractABI', PrivateKey, [contractActionName, actionABI]);
+  }
 }());

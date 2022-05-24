@@ -20,6 +20,10 @@ export const Faucet = () => {
 
     return (
         <Container className="container-fluid faucetContainer">
+ 
+            <h2 className='tip'> Click button to claim DANT token</h2>
+            <br />
+ 
             <div className='inputGroup'>
                 <Dropdown onSelect={handleSelect}>
                     <Dropdown.Toggle>
@@ -31,7 +35,17 @@ export const Faucet = () => {
                         }
                     </Dropdown.Menu>
                 </Dropdown>
+ 
             </div>
+
+            <div>
+                <a href="https://rinkebyfaucet.com/" target="_blank" className='tip'>RINKEBY faucet</a>
+ 
+            </div>
+            <div>
+                <a href="https://testnet.binance.org/faucet-smart" target="_blank" className='tip'>BSCTEST faucet</a>
+            </div>
+
         </Container>
     )
 }

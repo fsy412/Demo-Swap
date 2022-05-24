@@ -24,3 +24,8 @@ truffle compile
 ```
 truffle migrate --network avalancheFuji --reset --skip-dry-run
 ```
+
+
+## Demo instruction
+
+* [Usage instructions](./tutorial.md)
