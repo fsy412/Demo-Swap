@@ -10,34 +10,34 @@ const PageHead = () => {
         return chainName + " (" + val.substring(0, 6) + '...' + val.substring(val.length - 4, val.length) + ")"
     }
     return (
-        <div className="navbar" >
-            <Navbar bg="light" expand="md" >
-                <img className="logo" src="dant.png" alt="logo" />
-                <Navbar.Brand as={Link} className="headerText" to="/">Swap</Navbar.Brand>
-                <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="me-auto"></Nav>
-                    <Nav>
-                        <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link>
-                    </Nav>
-                    <Nav>
-                        <Nav.Link as={Link} className="faucet" to="/" >Swap</Nav.Link>
-                    </Nav>
-                    <Nav>
-                        <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
-                    </Nav>
- 
-                    <Nav>
-                        <Nav.Link as={Link} className="faucet" to="/token" >Token Info</Nav.Link>
-                    </Nav>
- 
-                    <Nav className="me-auto"></Nav>
-                    <Nav>
-                        <Nav.Link className="wallet" onClick={connectWallet}> {account ? short(account?.toString()) : "Connect To Wallet"}</Nav.Link>
-                    </Nav>
-                </Navbar.Collapse>
-            </Navbar>
 
-        </div>
+        <Navbar bg="light" expand="md" >
+            <img className="logo" src="dant.png" alt="logo" />
+            <Navbar.Brand as={Link} className="headerText" to="/">Swap</Navbar.Brand>
+            <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="me-auto"></Nav>
+                <Nav>
+                    <Nav.Link as={Link} className="faucet" to="/Trade" >Trade</Nav.Link>
+                </Nav>
+                <Nav>
+                    <Nav.Link as={Link} className="faucet" to="/" >Swap</Nav.Link>
+                </Nav>
+                <Nav>
+                    <Nav.Link as={Link} className="faucet" to="/faucet" >Faucet</Nav.Link>
+                </Nav>
+
+                <Nav>
+                    <Nav.Link as={Link} className="faucet" to="/token" >Token Info</Nav.Link>
+                </Nav>
+
+                <Nav className="me-auto"></Nav>
+                <Nav>
+                    <Nav.Link className="wallet" onClick={connectWallet}> {account ? short(account?.toString()) : "Connect To Wallet"}</Nav.Link>
+                </Nav>
+            </Navbar.Collapse>
+        </Navbar>
+
+
     )
 }
 
