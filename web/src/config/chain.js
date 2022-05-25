@@ -28,8 +28,8 @@ const networks = {
         {
             Name: "RINKEBY",
             List: [
-                { "name": "DANT", "icon": "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png", "address": "0xD2ccfe099E19Dc03e0802C659A446db720C01D71" },
-                { "name": "ETH", "icon": "https://anyswap.exchange/static/media/ETH.cec4ef9a.svg", "address": "0x4372FFc9839C5F22459cDB8298601960a760e511" },
+                { "name": "DANT", "icon": "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png", "address": "0x4372FFc9839C5F22459cDB8298601960a760e511" },
+                { "name": "ETH", "icon": "https://anyswap.exchange/static/media/ETH.cec4ef9a.svg", "address": "0x34D55579d378456a572ce9C267d73944c13830c8" },
             ]
         },
     ],
