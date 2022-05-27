@@ -102,7 +102,7 @@ contract Swap is ContractBase {
     }
 
     function match_order(
-        string calldata chain_id,
+        string calldata chain_id, // source chain id
         uint256 order_id,
         address asset,
         uint256 amount, 
@@ -177,44 +177,30 @@ contract Swap is ContractBase {
         order.payee = payee_address;
     }
 
-    function unlock_asset(string calldata chain_id, uint256 order_id, string calldata hashkey, address payee_address) public {
-        // bytes32 hash = sha256(abi.encodePacked(hashkey));
+    function unlock_asset(
+        string calldata chain_id, // unused
+        uint256 order_id, 
+        string calldata hashkey,
+        address payee_address // unused
+     ) public {
+        bytes32 hash = sha256(abi.encodePacked(hashkey));
+        Order storage order = idToOrder[order_id];
+        require(order.hashlock == hash);
+        require(order.payee == msg.sender);
+        order.status = "Done";
+
+        bool ret = IERC20(order.tokenContract).transfer(
+            msg.sender,
+            order.amount
+        );
+
         mapping(string => DestnContract) storage map = destnContractMap[
-            chain_id
+            order.toChainId
         ];
         DestnContract storage destnContract = map["recv_unlock_asset"];
         require(destnContract.used, "action not registered");
 
-        bytes memory data = abi.encode(order_id, hashkey, payee_address);
-        SQOS memory sqos = SQOS(0);
-        crossChainContract.sendMessage(
-            chain_id,
-            destnContract.contractAddress,
-            destnContract.funcName,
-            sqos,
-            data
-        );
-    }
-
-    function recv_unlock_asset(uint256 order_id, string calldata hashkey, address payee_address) public {
-        bytes32 hash = sha256(abi.encodePacked(hashkey));
-        Order storage order = idToOrder[order_id];
-        require(order.hashlock == hash);
-        order.status = "Filled";
-        // order.hashlockCheck = hash;
-        bool ret = IERC20(order.tokenContract).transfer(
-            payee_address,
-            order.amount
-        );
-
-        // send receive_transfer_asset
-        mapping(string => DestnContract) storage map = destnContractMap[
-            order.toChainId
-        ];
-        DestnContract storage destnContract = map["receive_transfer_asset"];
-        require(destnContract.used, "transfer_asset not registered");
-
-        bytes memory data = abi.encode(order_id, sha256(abi.encodePacked(uint(0))));
+        bytes memory data = abi.encode(order_id, hashkey, order.sender);
         SQOS memory sqos = SQOS(0);
         crossChainContract.sendMessage(
             order.toChainId,
@@ -225,16 +211,28 @@ contract Swap is ContractBase {
         );
     }
 
-    function receive_transfer_asset(uint256 order_id, bytes32 hash) public {
+    function recv_unlock_asset(uint256 order_id, string calldata hashkey, address payee_address) public {
         uint256 orderCount = _fillOrderIds.current();
         for (uint256 i = 0; i < orderCount; i++) {
             OrderFill storage order = idToFillOrder[i];
             if (order.orderId == order_id){
-                bool ret = IERC20(order.tokenContract).transfer(order.payee, order.amount);
+                bool ret = IERC20(order.tokenContract).transfer(payee_address, order.amount);
                 order.status = "Done";
                 order.transfer = ret;
             }
         }
+    }
+
+    function receive_transfer_asset(uint256 order_id, bytes32 hash) public {
+        // uint256 orderCount = _fillOrderIds.current();
+        // for (uint256 i = 0; i < orderCount; i++) {
+        //     OrderFill storage order = idToFillOrder[i];
+        //     if (order.orderId == order_id){
+        //         bool ret = IERC20(order.tokenContract).transfer(order.payee, order.amount);
+        //         order.status = "Done";
+        //         order.transfer = ret;
+        //     }
+        // }
     }
 
     function registerDestnContract(
