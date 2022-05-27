@@ -35,7 +35,7 @@ const Trade = () => {
             let orderList = await getOrderList()
             setOrders(orderList)
             setUnFilledOrders(orderList.filter((order) => { return (order.status == "Open" || order.status == "Locked") && order.sender !== account }))
-            setFilledOrders(orderList.filter((order) => { return order.status == "Filled" }))
+            setFilledOrders(orderList.filter((order) => { return order.status == "Done" }))
             setMyOrders(orderList.filter((order) => { return order.sender == account }))
         }
         fetchOrders();
@@ -51,7 +51,7 @@ const Trade = () => {
     const onConfirmBuy = async (hashKey: string) => {
         console.log('onConfirmBuy hashKey', hashKey, 'buyOrder', buyOrder)
         setModalShow(false)
- 
+
         try {
             await approveSwap(buyOrder.toTokenContract, getSwapAddress(chainName), buyOrder.toAmount.toString())
             await matchOrder(buyOrder.fromChainId, buyOrder.toChainId, +buyOrder.orderId.toString(), buyOrder.toTokenContract, buyOrder.toAmount, buyOrder.sender, hashKey)
@@ -59,7 +59,6 @@ const Trade = () => {
             console.log('error', error.data.message)
             notifyError(error.data.message)
         }
- 
     }
 
     const onUnlock = async (hashKey: string) => {
@@ -71,7 +70,7 @@ const Trade = () => {
             notifyError("Unlock failed hash doesn't match!")
             return
         }
-        await unlockAsset(unlockOrder.fromChainId, unlockOrder.toChainId, +unlockOrder.orderId.toString(), hashKey, unlockOrder.sender)
+        await unlockAsset(unlockOrder.fromChainId, +unlockOrder.orderId.toString(), hashKey)
     }
 
     const actionBtn = (order) => {
@@ -94,7 +93,12 @@ const Trade = () => {
         }
         if (order.status == "Locked" && order.payee == account) {
             return (
-                <td className="text-center" > <button className="actionBtn" onClick={() => { setUnlockOrder(order); setUnlockModalShow(true) }}>Unlock</button></td>
+                <td className="text-center" > <button className="actionBtn" onClick={() => {
+                    if (order.fromChainId != chainName) {
+                        changeNetwork(order.fromChainId)
+                    }
+                    setUnlockOrder(order); setUnlockModalShow(true)
+                }}>Unlock</button></td>
             )
         } else {
             // return (
@@ -214,9 +218,9 @@ const Trade = () => {
 
                 </Tab>
             </Tabs>
- 
 
- 
+
+
             <ToastContainer />
             <HashModal showModal={modalShow} onHide={() => setModalShow(false)} onConfirm={(val) => onConfirmBuy(val)} />
             <UnlockModal showModal={unlockModalShow} onHide={() => setUnlockModalShow(false)} onConfirm={(val) => onUnlock(val)} />

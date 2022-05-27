@@ -31,7 +31,7 @@ export const Web3Provider = (props: any) => {
     getSwapAddress: (chainId) => { },
     faucet: (tokenAddress) => { },
     getBalance: async (tokenName, chain) => { },
-    unlockAsset: async (fromChainId, chainId, orderId, hashKey, payee) => { },
+    unlockAsset: async (fromChainId, orderId, hashKey) => { },
   }
 
   useEffect((): (() => void) | undefined => {
@@ -149,10 +149,11 @@ export const Web3Provider = (props: any) => {
   };
 
   // function unlock_asset(string calldata chain_id, uint256 order_id, string calldata hashkey, address payee_address) public {
-  functionsToExport.unlockAsset = async (fromChainId, chainId, orderId, hashKey, payee) => {
-    let swapContract = getContract(getChainSwapAddress(chainId), Swap.abi)
-    console.log("unlockAsset", 'chainId:', chainId, 'swapContract', getChainSwapAddress(chainId), 'orderId:', orderId, 'hashKey', hashKey, 'payee:', payee)
-    const transaction = await swapContract.unlock_asset(fromChainId, orderId, hashKey, payee)
+  functionsToExport.unlockAsset = async (fromChainId, orderId, hashKey) => {
+    // let swapContract = getContract(getChainSwapAddress(fromChainId), Swap.abi)
+    const swapContract = new ethers.Contract(getChainSwapAddress(fromChainId), Swap.abi, signer)
+    console.log("unlockAsset", 'fromChainId:', fromChainId, 'swapContract:', getChainSwapAddress(fromChainId), 'orderId:', orderId, 'hashKey', hashKey)
+    const transaction = await swapContract.unlock_asset("123", orderId, hashKey, getChainSwapAddress(fromChainId))
     await transaction.wait()
   };
 
