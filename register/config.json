@@ -2,14 +2,14 @@
     "BSC": {
         "Name":"BSC",
         "ChanId": 97,
-        "SwapAddress" :"0x8eEF8F8a6a800A8bd5f7051D5e31DC91D34DA6d6",
+        "SwapAddress" :"0x9700922186b64cF220B1ac42Ea8B1B9a1AFafeCA",
         "DANTAddress" :"0xB33f8CEE067392aBD54b1Ecec75edc2d6b193473",
         "CrossChainContractAddress":"0x754f8bcB15BaE6A6BBc5f6DCcC87b0118f5e97e6"
     },
     "ETH": {
         "Name":"ETH",
         "ChanId": 4,
-        "SwapAddress" : "0xd84cd8a13f616b9AD8cBa814c2715Bc1e22660f2",
+        "SwapAddress" : "0x845417D7061d65174E3e5b802583754C30Cce0A3",
         "DANTAddress" :"0xD2ccfe099E19Dc03e0802C659A446db720C01D71",
         "CrossChainContractAddress":"0xcf89F199eF01501173E57D941b98C3fD3c731615"
     }
