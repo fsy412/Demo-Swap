@@ -1,7 +1,7 @@
 const Web3 = require('web3');
 const bsc = require('./bsc');
 const CONFIG = require('../config.json');
-const web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545');
+const web3 = new Web3('https://data-seed-prebsc-1-s3.binance.org:8545/');
 var Swap = require("../../build/contracts/Swap.json");
 
 let PrivateKey = '0x43cde662689acde2dfb0519fdbe3892168b58e0a273176b0e5483d994c16bcff'

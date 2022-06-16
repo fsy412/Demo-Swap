@@ -137,7 +137,7 @@ const Swap = () => {
     //             method: "wallet_addEthereumChain",
     //             params: [{
     //                 chainId: '0x61',
-    //                 rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+    //                 rpcUrls: ["https://data-seed-prebsc-1-s3.binance.org:8545//"],
     //                 chainName: "Binance Smart Chain Testnet",
     //                 nativeCurrency: {
     //                     name: "BNB",
