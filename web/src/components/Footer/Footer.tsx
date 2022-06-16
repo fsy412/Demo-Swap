@@ -36,7 +36,7 @@ const Footer = () => {
             </div>
 
             <div className="footer-copyright text-center py-3">© Powered by
-                <a href="https://dantechain.com/">DanteNetwork.com</a>
+                <a href="https://dantechain.com/">dantechain.com</a>
             </div>
 
         </div>
